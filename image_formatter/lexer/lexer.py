@@ -1,4 +1,4 @@
-from lexer.token import Token, TokenType
+from image_formatter.lexer.token import Token, TokenType
 
 SPECIAL_SIGNS = ["-", "_"]
 TAG_CHAR = "@"

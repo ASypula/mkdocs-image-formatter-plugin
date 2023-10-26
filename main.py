@@ -1,8 +1,8 @@
-from lexer.lexer import Lexer
+from image_formatter.lexer.lexer import Lexer
 
 if __name__ == "__main__":
-    # filename = "lexer_examples/test1.txt"
-    filename = "lexer_examples/test2.txt"
+    # filename = "tests/lexer/test_files/test1.txt"
+    filename = "tests/lexer/test_files/test2.txt"
     with open(filename) as fp:
         lexer = Lexer(fp)
         lexer.next_char()
