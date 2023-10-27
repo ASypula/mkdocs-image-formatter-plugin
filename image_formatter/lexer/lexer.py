@@ -1,29 +1,59 @@
 from image_formatter.lexer.token import Token, TokenType
+import io
 
 SPECIAL_SIGNS = ["-", "_"]
 TAG_CHAR = "@"
 
 
 class Lexer:
+    """
+    Class representing Lexer.
+    Responsible for going through the characters from source input one by one and
+    - returning valid tokens
+    - omitting unimportant parts
+    - raising exceptions on TODO
+
+    """
+
     curr_char = ""
 
-    def __init__(self, fp):
+    def __init__(self, fp: io.TextIOWrapper):
+        """
+        Args:
+            fp: file pointer to open file for reading
+
+        running: defines If lexer should still go through the characters or EOF was encountered
+        """
         self.fp = fp
         self.running = True
 
     @staticmethod
     def is_character(char: str) -> bool:
+        """
+        Checks for valid character in literal
+
+        Returns:
+            True If the string is alphanumeric or among the valid special signs
+            False otherwise
+        """
         return char.isalnum() or char in SPECIAL_SIGNS
 
-    # TODO: a better way of taking next characters?
     def next_char(self) -> str:
         self.curr_char = self.fp.read(1)
         if not self.curr_char:
             self.running = False
 
     def build_literal(self):
+        """
+        Tries to build a literal token according to:
+        literal = letter, { letter | literal_special_sign | digit }
+
+        Returns:
+            Appropriate token of type T_LITERAL If completed successfully,
+            None If the tag cannot be built
+        """
         if not self.curr_char.isalpha():
-            return 0
+            return None
         literal = self.curr_char
         self.next_char()
         while Lexer.is_character(self.curr_char):
@@ -31,18 +61,36 @@ class Lexer:
             self.next_char()
         return Token(TokenType.T_LITERAL, literal)
 
-    def build_tag(self):
+    def build_tag(self) -> Token | None:
+        """
+        Tries to build an image tag token according to:
+        image_size_tag = '@', literal
+
+        Returns:
+            Appropriate token of type T_IMAGE_SIZE_TAG If completed successfully,
+            None If the tag cannot be built
+        """
         if not self.curr_char == TAG_CHAR:
-            return 0
+            return None
         self.next_char()
         token = self.build_literal()
         if token.type != TokenType.T_LITERAL:
-            return 0
+            return None
         return Token(TokenType.T_IMAGE_SIZE_TAG, token.string)
 
-    def get_url_ending(self, string):
+    def get_url_ending(self, string: str) -> str | None:
+        """
+        Gets the remaining part of url after the first dot (dot is required at least once in an url)
+
+        Args:
+            string: first part of to-be url
+
+        Returns:
+            string: complete url
+            None: in case url cannot be built
+        """
         if self.curr_char != ".":
-            return 0
+            return None
         string += self.curr_char
         self.next_char()
         while Lexer.is_character(self.curr_char) or self.curr_char in ["/", "."]:
@@ -50,22 +98,37 @@ class Lexer:
             self.next_char()
         return string
 
-    def build_url(self):
+    def build_url(self) -> Token | None:
+        """
+        Tries to build a url token according to:
+        image_url = '(', { '/' | '.' | literal}, '.', literal, ')'
+
+        Returns:
+            Appropriate token of type T_IMAGE_URL If completed successfully,
+            None If the url cannot be built
+        """
         if not self.curr_char == "(":
-            return 0
+            return None
         self.next_char()
         string = ""
         while Lexer.is_character(self.curr_char) or self.curr_char == "/":
             string += self.curr_char
             self.next_char()
         if not (string := self.get_url_ending(string)):
-            return 0
+            return None
         if not self.curr_char == ")":
-            return 0
+            return None
         self.next_char()
         return Token(TokenType.T_IMAGE_URL, string)
 
-    def get_token(self):
+    def get_token(self) -> Token:
+        """
+        Gets next token.
+        If the end of file was encountered (running is False) will return EOF token.
+
+        Returns:
+            Appropriate token
+        """
         if self.running:
             # watch out, the below works starting Python 3.8
             if (
