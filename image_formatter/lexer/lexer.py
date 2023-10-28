@@ -22,7 +22,7 @@ class Lexer:
         Args:
             fp: file pointer to open file for reading
 
-        running: defines If lexer should still go through the characters or EOF was encountered
+        running: defines if lexer should still go through the characters or EOF was encountered
         """
         self.fp = fp
         self.running = True
@@ -33,12 +33,17 @@ class Lexer:
         Checks for valid character in literal
 
         Returns:
-            True If the string is alphanumeric or among the valid special signs
+            True if the string is alphanumeric or among the valid special signs
             False otherwise
         """
         return char.isalnum() or char in SPECIAL_SIGNS
 
-    def next_char(self) -> str:
+    def next_char(self) -> None:
+        """
+        Takes next character from the stream.
+        If there are no more characters to read, the flag running is set to False - 
+        lexer finished all work.
+        """
         self.curr_char = self.fp.read(1)
         if not self.curr_char:
             self.running = False
@@ -49,8 +54,8 @@ class Lexer:
         literal = letter, { letter | literal_special_sign | digit }
 
         Returns:
-            Appropriate token of type T_LITERAL If completed successfully,
-            None If the tag cannot be built
+            Appropriate token of type T_LITERAL if completed successfully,
+            None if the tag cannot be built
         """
         if not self.curr_char.isalpha():
             return None
@@ -67,8 +72,8 @@ class Lexer:
         image_size_tag = '@', literal
 
         Returns:
-            Appropriate token of type T_IMAGE_SIZE_TAG If completed successfully,
-            None If the tag cannot be built
+            Appropriate token of type T_IMAGE_SIZE_TAG if completed successfully,
+            None if the tag cannot be built
         """
         if not self.curr_char == TAG_CHAR:
             return None
@@ -104,8 +109,8 @@ class Lexer:
         image_url = '(', { '/' | '.' | literal}, '.', literal, ')'
 
         Returns:
-            Appropriate token of type T_IMAGE_URL If completed successfully,
-            None If the url cannot be built
+            Appropriate token of type T_IMAGE_URL if completed successfully,
+            None if the url cannot be built
         """
         if not self.curr_char == "(":
             return None
