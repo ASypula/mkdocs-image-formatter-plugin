@@ -1,5 +1,6 @@
 from image_formatter.lexer.lexer import Lexer
 from image_formatter.lexer.token import TokenType
+from tests.test_helpers import get_all_tokens
 import io
 import pytest
 
@@ -22,18 +23,6 @@ EXP_T_TYPES_TRICKY1 = [
     ],
 ]
 EXP_T_STRINGS_TRICKY1 = [["hello"], ["tag1", "url1.png", "one-more-tag", "and_word"]]
-
-
-def get_all_tokens(lexer):
-    tokens = []
-    lexer.next_char()
-    while lexer.running:
-        if token := lexer.get_token():
-            tokens.append(token)
-        else:
-            lexer.next_char()
-    return tokens
-
 
 @pytest.mark.parametrize("text", LITERALS_1)
 def test_T_LITERAL_only(text):
