@@ -17,6 +17,4 @@ def get_all_tokens(lexer: Lexer) -> list[Token]:
     while lexer.running:
         if token := lexer.get_token():
             tokens.append(token)
-        else:
-            lexer.next_char()
     return tokens

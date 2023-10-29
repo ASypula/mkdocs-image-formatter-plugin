@@ -48,17 +48,33 @@ class Lexer:
         if not self.curr_char:
             self.running = False
 
-    def build_literal(self):
+    def build_char(self) -> Token | None:
+        """
+        Tries to build a character token.
+        It includes all characters and only whitespaces are omitted.
+
+        Returns:
+            Appropriate token of type T_CHAR if completed successfully,
+            None if the whitespace is encountered
+        """
+        if self.curr_char.isspace():
+            self.next_char()
+            return None
+        char = self.curr_char
+        self.next_char()
+        return Token(TokenType.T_CHAR, char)
+
+    def build_literal(self) -> Token | None:
         """
         Tries to build a literal token according to:
         literal = letter, { letter | literal_special_sign | digit }
 
         Returns:
             Appropriate token of type T_LITERAL if completed successfully,
-            None if the tag cannot be built
+            Otherwise the return from build_char (None or token T_CHAR)
         """
         if not self.curr_char.isalpha():
-            return None
+            return self.build_char()
         literal = self.curr_char
         self.next_char()
         while Lexer.is_character(self.curr_char):
