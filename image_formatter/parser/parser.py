@@ -1,6 +1,7 @@
 from image_formatter.lexer.lexer import Lexer
 from image_formatter.lexer.token import TokenType
 
+
 class Parser:
     """
     Class parser responsible for parsing the code.
@@ -15,56 +16,60 @@ class Parser:
         self.lexer = lex
         self.curr_token = lex.get_token()
 
-    def consume_if_token(self, token_type: TokenType) -> bool:
+    def consume_if_token(self, token_type: TokenType) -> str | bool:
         """
-        Get next token from lexer if the token types are the same.
+        Gets next token from lexer if the token types are the same.
 
         Args:
             token_type: type of the token to be compared
 
         Returns:
-            True: if the types are matching
+            str: string from the token if the types are matching
             False: if the token types are different
         """
-        if not self.curr_token or self.curr_token.type != token_type:
+        while not self.curr_token:
+            self.curr_token = self.lexer.get_token()
+        if self.curr_token.type != token_type:
             return False
+        string = self.curr_token.string
         self.curr_token = self.lexer.get_token()
-        return True
+        return string
 
-    def parse_image_link_url(self):
-        #TODO: return None or 0?
+    def parse_image_link_url(self, tag: str) -> (str, str) or bool:
         """
-        Verify if image url can be created according to the: 
+        Verify if image url can be created according to the:
         image_link = image_size_tag, image_url
-        """
-        if self.consume_if_token(TokenType.T_IMAGE_URL):
-            print("Image link found! :)")
-            return True
-        return None
 
-    def parse_image_link_tag(self):
+        Args:
+            tag: already found tag
+
+        Returns:
+            tuple(str, str): if successful, tag and url
+            False: if image link cannot be created
+        """
+        if url := self.consume_if_token(TokenType.T_IMAGE_URL):
+            return (tag, url)
+        return False
+
+    def parse_image_link_tag(self) -> (str, str) or bool:
         """
         Tries to parse the first part of image link - the tag.
         image_link = image_size_tag, image_url
+
+        Returns:
+            tuple(str, str): if successful from the parse_image_link_url
+            False: if image link tag cannot be created
         """
-        if self.consume_if_token(TokenType.T_IMAGE_SIZE_TAG):
-            return self.parse_image_link_url()
-        return None
+        if tag := self.consume_if_token(TokenType.T_IMAGE_SIZE_TAG):
+            return self.parse_image_link_url(tag)
+        return False
 
     def parse(self):
         """
         TODO
         """
         while self.lexer.running:
-            if self.curr_token:
-                print(self.curr_token.string)
+            if image_link_tag := self.parse_image_link_tag():
+                yield image_link_tag
             else:
-                print("None")
-            is_found = self.parse_image_link_tag()
-            if not is_found:
-                if not self.curr_token: self.lexer.next_char()
-                print("Not found")
-            else:
-                print("Found!")
-            self.curr_token = self.lexer.get_token()
-            print(f"{'-'*10}")
+                self.curr_token = self.lexer.get_token()
