@@ -4,28 +4,8 @@ from tests.test_helpers import get_all_tokens
 import io
 import pytest
 
-LITERALS_1 = ["one", "some-hyphen", "one two three", "with_underscore"]
-TAGS_1 = ["@one", "@some-hyphen&@hello", "@one **", "``  @with_underscore"]
-URLS_1 = [
-    "(one/two/three.com)",
-    "    (hi/some-hyphen.png)",
-    "\n (with.many.dots/one.jpg)",
-    "**  (url1.png.url2/url3.jpg)",
-]
-TRICKY_1 = ["1hello", "@tag1(url1.png)@one-more-tag&and_word"]
-EXP_T_TYPES_TRICKY1 = [
-    [TokenType.T_LITERAL],
-    [
-        TokenType.T_IMAGE_SIZE_TAG,
-        TokenType.T_IMAGE_URL,
-        TokenType.T_IMAGE_SIZE_TAG,
-        TokenType.T_LITERAL,
-    ],
-]
-EXP_T_STRINGS_TRICKY1 = [["hello"], ["tag1", "url1.png", "one-more-tag", "and_word"]]
 
-
-@pytest.mark.parametrize("text", LITERALS_1)
+@pytest.mark.parametrize("text", ["one", "some-hyphen", "one two three", "with_underscore"])
 def test_T_LITERAL_only(text):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
@@ -33,7 +13,7 @@ def test_T_LITERAL_only(text):
     assert all(token.type == TokenType.T_LITERAL for token in tokens)
 
 
-@pytest.mark.parametrize("text", TAGS_1)
+@pytest.mark.parametrize("text", ["@one", "@some-hyphen&@hello", "@one **", "``  @with_underscore"])
 def test_T_IMAGE_SIZE_TAG_only(text):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
@@ -41,7 +21,15 @@ def test_T_IMAGE_SIZE_TAG_only(text):
     assert all(token.type == TokenType.T_IMAGE_SIZE_TAG for token in tokens)
 
 
-@pytest.mark.parametrize("text", URLS_1)
+@pytest.mark.parametrize(
+    "text",
+    [
+        "(one/two/three.com)",
+        "    (hi/some-hyphen.png)",
+        "\n (with.many.dots/one.jpg)",
+        "**  (url1.png.url2/url3.jpg)",
+    ],
+)
 def test_T_IMAGE_URL_only(text):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
@@ -74,7 +62,19 @@ def combine(text, expected_types, expected_strings):
 
 @pytest.mark.parametrize(
     "text, exp_t_types, exp_t_strings",
-    combine(TRICKY_1, EXP_T_TYPES_TRICKY1, EXP_T_STRINGS_TRICKY1),
+    combine(
+        ["1hello", "@tag1(url1.png)@one-more-tag&and_word"],
+        [
+            [TokenType.T_LITERAL],
+            [
+                TokenType.T_IMAGE_SIZE_TAG,
+                TokenType.T_IMAGE_URL,
+                TokenType.T_IMAGE_SIZE_TAG,
+                TokenType.T_LITERAL,
+            ],
+        ],
+        [["hello"], ["tag1", "url1.png", "one-more-tag", "and_word"]],
+    ),
 )
 def test_tricky1(text, exp_t_types, exp_t_strings):
     fp = io.StringIO(text)
