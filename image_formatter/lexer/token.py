@@ -9,7 +9,8 @@ class TokenType(Enum):
     T_LITERAL = 0
     T_IMAGE_URL = 1
     T_IMAGE_SIZE_TAG = 2
-    T_EOF = 3
+    T_CHAR = 3
+    T_EOF = 4
 
 
 class Token:
