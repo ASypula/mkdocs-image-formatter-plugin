@@ -1,6 +1,7 @@
 from image_formatter.lexer.lexer import Lexer
 from image_formatter.lexer.token import Token
 
+
 def get_all_tokens(lexer: Lexer) -> list[Token]:
     """
     Collects all tokens available from the lexer's stream.
@@ -9,7 +10,7 @@ def get_all_tokens(lexer: Lexer) -> list[Token]:
         lexer: Lexer to use
 
     Returns:
-        list of tokens 
+        list of tokens
     """
     tokens = []
     lexer.next_char()

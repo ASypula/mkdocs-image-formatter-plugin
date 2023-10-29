@@ -24,6 +24,7 @@ EXP_T_TYPES_TRICKY1 = [
 ]
 EXP_T_STRINGS_TRICKY1 = [["hello"], ["tag1", "url1.png", "one-more-tag", "and_word"]]
 
+
 @pytest.mark.parametrize("text", LITERALS_1)
 def test_T_LITERAL_only(text):
     fp = io.StringIO(text)

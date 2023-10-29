@@ -41,7 +41,7 @@ class Lexer:
     def next_char(self) -> None:
         """
         Takes next character from the stream.
-        If there are no more characters to read, the flag running is set to False - 
+        If there are no more characters to read, the flag running is set to False -
         lexer finished all work.
         """
         self.curr_char = self.fp.read(1)
@@ -136,11 +136,7 @@ class Lexer:
         """
         if self.running:
             # watch out, the below works starting Python 3.8
-            if (
-                (token := self.build_tag())
-                or (token := self.build_url())
-                or (token := self.build_literal())
-            ):
+            if (token := self.build_tag()) or (token := self.build_url()) or (token := self.build_literal()):
                 return token
         else:
             return Token(TokenType.T_EOF)
