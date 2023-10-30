@@ -1,3 +1,0 @@
-will_find @small2(some/url.com)+word
-
-will_not_find @small      (some/url.com)

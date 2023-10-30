@@ -1,5 +1,6 @@
 from image_formatter.lexer.lexer import Lexer
 from image_formatter.parser.parser import Parser
+from tests.test_helpers import get_all_parser_results
 import io
 import pytest
 
@@ -11,14 +12,6 @@ def setup_parser(request):
     lexer.next_char()
     parser = Parser(lexer)
     return parser
-
-
-def get_all_parser_results(parser: Parser):
-    image_links = []
-    generator_parser = parser.parse()
-    for image_link in generator_parser:
-        image_links.append(image_link)
-    return image_links
 
 
 @pytest.mark.parametrize(

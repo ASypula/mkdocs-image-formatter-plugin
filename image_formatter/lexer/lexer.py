@@ -152,7 +152,11 @@ class Lexer:
         """
         if self.running:
             # watch out, the below works starting Python 3.8
-            if (token := self.build_tag()) or (token := self.build_url()) or (token := self.build_literal()):
+            if (
+                (token := self.build_tag())
+                or (token := self.build_url())
+                or (token := self.build_literal())
+            ):
                 return token
         else:
             return Token(TokenType.T_EOF)
