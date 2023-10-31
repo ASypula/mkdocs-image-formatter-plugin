@@ -1,4 +1,4 @@
-from image_formatter.lexer.token import Token, TokenType
+from image_formatter.lexer.token import Token, TokenType, IntegerToken
 import io
 
 SPECIAL_SIGNS = ["-", "_"]
@@ -82,6 +82,28 @@ class Lexer:
             self.next_char()
         return Token(TokenType.T_LITERAL, literal)
 
+    def build_integer(self) -> IntegerToken | None:
+        """
+        Tries to build an integer token according to:
+        integer         = zero_digit | (non_zero_digit, { digit })
+        digit           = zero_digit | non_zero_digit
+        non_zero_digit  = 1..9
+        zero_digit      = 0
+
+        Returns:
+            Appropriate token of type T_INTEGER if completed successfully,
+            Otherwise the returns None
+        """
+        if not self.curr_char.isdigit():
+            return None
+        number = int(self.curr_char)
+        self.next_char()
+        if number != 0:
+            while self.curr_char.isdigit() and number != 0:
+                number = number * 10 + int(self.curr_char)
+                self.next_char()
+        return IntegerToken(TokenType.T_INTEGER, number)
+
     def build_tag(self) -> Token | None:
         """
         Tries to build an image tag token according to:
@@ -152,7 +174,12 @@ class Lexer:
         """
         if self.running:
             # watch out, the below works starting Python 3.8
-            if (token := self.build_tag()) or (token := self.build_url()) or (token := self.build_literal()):
+            if (
+                (token := self.build_tag())
+                or (token := self.build_url())
+                or (token := self.build_integer())
+                or (token := self.build_literal())
+            ):
                 return token
         else:
             return Token(TokenType.T_EOF)

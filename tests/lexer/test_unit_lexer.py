@@ -63,7 +63,7 @@ def test_when_literal_starts_with_digit_then_literal_token_without_starting_digi
     fp = io.StringIO(text)
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
-    assert [token.type for token in tokens] == [TokenType.T_CHAR, TokenType.T_LITERAL]
+    assert [token.type for token in tokens] == [TokenType.T_INTEGER, TokenType.T_LITERAL]
     assert [token.string for token in tokens] == ["1", "hello"]
 
 
@@ -76,7 +76,37 @@ def test_given_text_when_tags_not_separated_by_spaces_then_tokens_returned():
         TokenType.T_IMAGE_SIZE_TAG,
         TokenType.T_IMAGE_URL,
         TokenType.T_IMAGE_SIZE_TAG,
-        TokenType.T_CHAR, 
+        TokenType.T_CHAR,
         TokenType.T_LITERAL,
     ]
     assert [token.string for token in tokens] == ["tag1", "url1.png", "one-more-tag", "&", "and_word"]
+
+
+@pytest.mark.parametrize(
+    "text, expected_types, expected_values",
+    [("1", [TokenType.T_INTEGER], [1]), ("41", [TokenType.T_INTEGER], [41]), ("5014", [TokenType.T_INTEGER], [5014])],
+)
+def test_given_integer_then_integer_token_is_returned(text, expected_types, expected_values):
+    fp = io.StringIO(text)
+    lexer = Lexer(fp)
+    tokens = get_all_tokens(lexer)
+    assert [token.type for token in tokens] == expected_types
+    assert [token.integer for token in tokens] == expected_values
+
+
+@pytest.mark.parametrize(
+    "text, expected_types, expected_values",
+    [
+        ("01", [TokenType.T_INTEGER, TokenType.T_INTEGER], [0, 1]),
+        ("041", [TokenType.T_INTEGER, TokenType.T_INTEGER], [0, 41]),
+        ("05014", [TokenType.T_INTEGER, TokenType.T_INTEGER], [0, 5014]),
+    ],
+)
+def test_given_digits_when_zero_is_the_first_one_then_two_integer_tokens_are_retuned(
+    text: str, expected_types: list, expected_values: list
+):
+    fp = io.StringIO(text)
+    lexer = Lexer(fp)
+    tokens = get_all_tokens(lexer)
+    assert [token.type for token in tokens] == expected_types
+    assert [token.integer for token in tokens] == expected_values
