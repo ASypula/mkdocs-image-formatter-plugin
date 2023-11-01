@@ -18,7 +18,7 @@ def test_file1_literals():
 def test_file2_mix():
     filename = "tests/lexer/test_files/test2.txt"
     expected_types = [
-        TokenType.T_CHAR,
+        TokenType.T_INTEGER,
         TokenType.T_LITERAL,
         TokenType.T_IMAGE_SIZE_TAG,
         TokenType.T_IMAGE_URL,

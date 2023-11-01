@@ -10,7 +10,8 @@ class TokenType(Enum):
     T_IMAGE_URL = 1
     T_IMAGE_SIZE_TAG = 2
     T_CHAR = 3
-    T_EOF = 4
+    T_INTEGER = 4
+    T_EOF = 5
 
 
 class Token:
@@ -26,3 +27,13 @@ class Token:
         """
         self.type = type
         self.string = string
+
+
+class IntegerToken(Token):
+    """
+    Class representing token of type int.
+    """
+
+    def __init__(self, type: TokenType, integer: int):
+        super(IntegerToken, self).__init__(type, str(integer))
+        self.integer = integer
