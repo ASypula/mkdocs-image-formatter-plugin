@@ -1,6 +1,6 @@
 from image_formatter.lexer.lexer import Lexer
 from image_formatter.lexer.token import TokenType
-from test_unit_lexer import get_all_tokens
+from ..test_helpers import get_all_tokens
 
 
 def test_file1_literals():
