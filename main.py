@@ -8,5 +8,5 @@ if __name__ == "__main__":
         print(type(fp))
         lexer = Lexer(fp)
         lexer.next_char()
-        parser=Parser(lexer)
+        parser = Parser(lexer)
         parser.parse()

@@ -6,9 +6,7 @@ import io
 import pytest
 
 
-@pytest.mark.parametrize(
-    "text", ["one", "some-hyphen", "one two three", "with_underscore"]
-)
+@pytest.mark.parametrize("text", ["one", "some-hyphen", "one two three", "with_underscore"])
 def test_given_only_plain_text_then_only_literal_tokens_are_returned(text):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
@@ -16,9 +14,7 @@ def test_given_only_plain_text_then_only_literal_tokens_are_returned(text):
     assert all(token.type == TokenType.T_LITERAL for token in tokens)
 
 
-@pytest.mark.parametrize(
-    "text", ["@one", "@some-hyphen @hello", "@one \n", "  @with_underscore"]
-)
+@pytest.mark.parametrize("text", ["@one", "@some-hyphen @hello", "@one \n", "  @with_underscore"])
 def test_given_only_tags_then_only_tag_tokens_are_returned(text):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
