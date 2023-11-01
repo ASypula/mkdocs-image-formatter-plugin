@@ -21,7 +21,9 @@ def get_all_tokens(lexer: Lexer) -> list[Token]:
     return tokens
 
 
-def get_all_parser_results(parser: Parser, lexer_iterations: int) -> list[(str, str) or None]:
+def get_all_parser_results(
+    parser: Parser, lexer_iterations: int
+) -> list[(str, str) or None]:
     """
     Collects all results returned by the function parse_image_link_tag.
     The parse function cannot be used in unit tests for parser as it uses the lexer.running attribute.
