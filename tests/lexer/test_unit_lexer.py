@@ -110,3 +110,15 @@ def test_given_digits_when_zero_is_the_first_one_then_two_integer_tokens_are_ret
     tokens = get_all_tokens(lexer)
     assert [token.type for token in tokens] == expected_types
     assert [token.integer for token in tokens] == expected_values
+
+
+@pytest.mark.parametrize(
+    "text, expected_types, expected_values",
+    [("2147483647", [TokenType.T_INTEGER], [2147483647]), ("21474836470000", [TokenType.T_INTEGER], [21474836470000])],
+)
+def test_given__very_large_integer_then_integer_token_is_returned(text, expected_types, expected_values):
+    fp = io.StringIO(text)
+    lexer = Lexer(fp)
+    tokens = get_all_tokens(lexer)
+    assert [token.type for token in tokens] == expected_types
+    assert [token.integer for token in tokens] == expected_values
