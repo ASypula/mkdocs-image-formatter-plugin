@@ -71,7 +71,7 @@ class Lexer:
 
         Returns:
             Appropriate token of type T_LITERAL if completed successfully,
-            Otherwise the return from build_char (None or token T_CHAR)
+            Otherwise the return from build_char
         """
         if not self.curr_char.isalpha():
             return self.build_char()
