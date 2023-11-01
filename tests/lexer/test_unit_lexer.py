@@ -104,7 +104,7 @@ def test_given_integer_then_integer_token_is_returned(text, expected_types, expe
     ],
 )
 def test_given_digits_when_zero_is_the_first_one_then_two_integer_tokens_are_retuned(
-    text: str, expected_types: list, expected_values: list
+    text, expected_types, expected_values
 ):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
