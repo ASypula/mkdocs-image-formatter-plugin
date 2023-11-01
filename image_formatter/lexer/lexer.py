@@ -1,5 +1,6 @@
 from image_formatter.lexer.token import Token, TokenType, IntegerToken
 import io
+import sys
 
 SPECIAL_SIGNS = ["-", "_"]
 TAG_CHAR = "@"
@@ -17,7 +18,7 @@ class Lexer:
 
     curr_char = ""
 
-    def __init__(self, fp: io.TextIOWrapper):
+    def __init__(self, fp: io.TextIOWrapper, max_int: int = sys.maxsize):
         """
         Args:
             fp: file pointer to open file for reading
@@ -26,6 +27,7 @@ class Lexer:
         """
         self.fp = fp
         self.running = True
+        self.max_int = max_int
 
     @staticmethod
     def is_character(char: str) -> bool:
@@ -99,10 +101,13 @@ class Lexer:
         number = int(self.curr_char)
         self.next_char()
         if number != 0:
-            while self.curr_char.isdigit() and number != 0:
+            while self.curr_char.isdigit() and self._is_number_in_range(number):
                 number = number * 10 + int(self.curr_char)
                 self.next_char()
         return IntegerToken(TokenType.T_INTEGER, number)
+
+    def _is_number_in_range(self, number):
+        return number * 10 + int(self.curr_char) <= self.max_int
 
     def build_tag(self) -> Token | None:
         """
