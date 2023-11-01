@@ -1,5 +1,6 @@
-from image_formatter.lexer.token import Token, TokenType
+from image_formatter.lexer.token import Token, TokenType, IntegerToken
 import io
+import sys
 
 SPECIAL_SIGNS = ["-", "_"]
 TAG_CHAR = "@"
@@ -17,7 +18,7 @@ class Lexer:
 
     curr_char = ""
 
-    def __init__(self, fp: io.TextIOWrapper):
+    def __init__(self, fp: io.TextIOWrapper, max_int: int = sys.maxsize):
         """
         Args:
             fp: file pointer to open file for reading
@@ -26,6 +27,7 @@ class Lexer:
         """
         self.fp = fp
         self.running = True
+        self.max_int = max_int
 
     @staticmethod
     def is_character(char: str) -> bool:
@@ -71,7 +73,7 @@ class Lexer:
 
         Returns:
             Appropriate token of type T_LITERAL if completed successfully,
-            Otherwise the return from build_char (None or token T_CHAR)
+            Otherwise the return from build_char
         """
         if not self.curr_char.isalpha():
             return self.build_char()
@@ -81,6 +83,31 @@ class Lexer:
             literal += self.curr_char
             self.next_char()
         return Token(TokenType.T_LITERAL, literal)
+
+    def build_integer(self) -> IntegerToken | None:
+        """
+        Tries to build an integer token according to:
+        integer         = zero_digit | (non_zero_digit, { digit })
+        digit           = zero_digit | non_zero_digit
+        non_zero_digit  = 1..9
+        zero_digit      = 0
+
+        Returns:
+            Appropriate token of type T_INTEGER if completed successfully,
+            Otherwise the returns None
+        """
+        if not self.curr_char.isdigit():
+            return None
+        number = int(self.curr_char)
+        self.next_char()
+        if number != 0:
+            while self.curr_char.isdigit() and self._is_number_in_range(number):
+                number = number * 10 + int(self.curr_char)
+                self.next_char()
+        return IntegerToken(TokenType.T_INTEGER, number)
+
+    def _is_number_in_range(self, number):
+        return number * 10 + int(self.curr_char) <= self.max_int
 
     def build_tag(self) -> Token | None:
         """
@@ -155,6 +182,7 @@ class Lexer:
             if (
                 (token := self.build_tag())
                 or (token := self.build_url())
+                or (token := self.build_integer())
                 or (token := self.build_literal())
             ):
                 return token
