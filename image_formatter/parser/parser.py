@@ -52,8 +52,7 @@ class Parser:
         """
         if url := self.consume_if_token(TokenType.T_IMAGE_URL):
             return (tag, url)
-        exception = UnexpectedTagException(TokenType.T_IMAGE_URL, self.curr_token.type)
-        self.error_handler.handle(exception)
+        self.error_handler.handle(UnexpectedTagException(TokenType.T_IMAGE_URL, self.curr_token.type))
         return False
 
     def parse_image_link_tag(self) -> (str, str) or bool:
