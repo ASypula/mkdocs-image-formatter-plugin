@@ -1,6 +1,9 @@
 from image_formatter.lexer.token import Token, TokenType, IntegerToken
 import io
 import sys
+from mkdocs.plugins import get_plugin_logger
+
+log = get_plugin_logger(__name__)
 
 SPECIAL_SIGNS = ["-", "_"]
 TAG_CHAR = "@"
@@ -96,7 +99,9 @@ class Lexer:
             Appropriate token of type T_INTEGER if completed successfully,
             Otherwise the returns None
         """
+        log.info("Trying to build an integer.")
         if not self.curr_char.isdigit():
+            log.info("Failed to build an integer. No digit provided.")
             return None
         number = int(self.curr_char)
         self.next_char()
@@ -104,6 +109,7 @@ class Lexer:
             while self.curr_char.isdigit() and self._is_number_in_range(number):
                 number = number * 10 + int(self.curr_char)
                 self.next_char()
+        log.info("Integer built successfully. Returning T_INTEGER token.")
         return IntegerToken(TokenType.T_INTEGER, number)
 
     def _is_number_in_range(self, number):
@@ -118,12 +124,16 @@ class Lexer:
             Appropriate token of type T_IMAGE_SIZE_TAG if completed successfully,
             None if the tag cannot be built
         """
+        log.info("Trying to build a tag.")
         if not self.curr_char == TAG_CHAR:
+            log.info(f"Failed to build a tag. Missing {TAG_CHAR}.")
             return None
         self.next_char()
         token = self.build_literal()
         if token.type != TokenType.T_LITERAL:
+            log.info("Failed to build a tag. Missing token T_LITERAL.")
             return None
+        log.info("Tag built successfully. Returning T_IMAGE_SIZE_TAG token.")
         return Token(TokenType.T_IMAGE_SIZE_TAG, token.string)
 
     def get_url_ending(self, string: str) -> str | None:
@@ -137,13 +147,16 @@ class Lexer:
             string: complete url
             None: in case url cannot be built
         """
+        log.info("Trying to build an url ending.")
         if self.curr_char != ".":
+            log.info("Failed to build an url ending. Missing '.'.)")
             return None
         string += self.curr_char
         self.next_char()
         while Lexer.is_character(self.curr_char) or self.curr_char in ["/", "."]:
             string += self.curr_char
             self.next_char()
+        log.info("Url ending built successfully.")
         return string
 
     def build_url(self) -> Token | None:
@@ -155,7 +168,9 @@ class Lexer:
             Appropriate token of type T_IMAGE_URL if completed successfully,
             None if the url cannot be built
         """
+        log.info("Trying to build an url.")
         if not self.curr_char == "(":
+            log.info("Failed to build an url. Missing '('.)")
             return None
         self.next_char()
         string = ""
@@ -163,10 +178,13 @@ class Lexer:
             string += self.curr_char
             self.next_char()
         if not (string := self.get_url_ending(string)):
+            log.info("Failed to build an url. Missing url ending.)")
             return None
         if not self.curr_char == ")":
+            log.info("Failed to build an url. Missing ')'.)")
             return None
         self.next_char()
+        log.info("Image url built successfully. Returning T_IMAGE_URL token.")
         return Token(TokenType.T_IMAGE_URL, string)
 
     def get_token(self) -> Token:
@@ -179,12 +197,15 @@ class Lexer:
         """
         if self.running:
             # watch out, the below works starting Python 3.8
+            log.info("Fetching next token.")
             if (
                 (token := self.build_tag())
                 or (token := self.build_url())
                 or (token := self.build_integer())
                 or (token := self.build_literal())
             ):
+                log.info(f"Token {token.type} returned with content: {token.string}.")
                 return token
         else:
+            log.info("Lexer finished work. Returning T_EOF token.")
             return Token(TokenType.T_EOF)
