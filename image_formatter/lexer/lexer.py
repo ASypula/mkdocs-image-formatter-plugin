@@ -12,8 +12,6 @@ class Lexer:
     Responsible for going through the characters from source input one by one and
     - returning valid tokens
     - omitting unimportant parts
-    - raising exceptions on TODO
-
     """
 
     curr_char = ""

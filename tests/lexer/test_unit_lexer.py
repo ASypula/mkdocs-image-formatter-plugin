@@ -6,9 +6,7 @@ import io
 import pytest
 
 
-@pytest.mark.parametrize(
-    "text", ["one", "some-hyphen", "one two three", "with_underscore"]
-)
+@pytest.mark.parametrize("text", ["one", "some-hyphen", "one two three", "with_underscore"])
 def test_given_only_plain_text_then_only_literal_tokens_are_returned(text):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
@@ -16,9 +14,7 @@ def test_given_only_plain_text_then_only_literal_tokens_are_returned(text):
     assert all(token.type == TokenType.T_LITERAL for token in tokens)
 
 
-@pytest.mark.parametrize(
-    "text", ["@one", "@some-hyphen @hello", "@one \n", "  @with_underscore"]
-)
+@pytest.mark.parametrize("text", ["@one", "@some-hyphen @hello", "@one \n", "  @with_underscore"])
 def test_given_only_tags_then_only_tag_tokens_are_returned(text):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
@@ -113,9 +109,7 @@ def test_given_text_when_tags_not_separated_by_spaces_then_tokens_returned():
         ("5014", [TokenType.T_INTEGER], [5014]),
     ],
 )
-def test_given_integer_then_integer_token_is_returned(
-    text, expected_types, expected_values
-):
+def test_given_integer_then_integer_token_is_returned(text, expected_types, expected_values):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
@@ -149,9 +143,7 @@ def test_given_digits_when_zero_is_the_first_one_then_two_integer_tokens_are_ret
         (f"{sys.maxsize}", [TokenType.T_INTEGER], [sys.maxsize]),
     ],
 )
-def test_given_very_large_integer_then_integer_token_is_returned(
-    text, expected_types, expected_values
-):
+def test_given_very_large_integer_then_integer_token_is_returned(text, expected_types, expected_values):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
