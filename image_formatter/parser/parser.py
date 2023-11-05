@@ -1,5 +1,7 @@
 from image_formatter.lexer.lexer import Lexer
 from image_formatter.lexer.token import TokenType
+from image_formatter.error_handler.error_handler import ErrorHandler
+from image_formatter.error_handler.errors import UnexpectedTagException
 from mkdocs.plugins import get_plugin_logger
 
 log = get_plugin_logger(__name__)
@@ -10,13 +12,14 @@ class Parser:
     Focuses only on the plugin's purpose - images with added size tags
     """
 
-    def __init__(self, lex: Lexer):
+    def __init__(self, lex: Lexer, error_handler: ErrorHandler = ErrorHandler()):
         """
         Args:
             lex: lexer used for obtaining tokens
         """
         self.lexer = lex
         self.curr_token = lex.get_token()
+        self.error_handler = error_handler
 
     def consume_if_token(self, token_type: TokenType) -> str | bool:
         """
@@ -56,6 +59,7 @@ class Parser:
         if url := self.consume_if_token(TokenType.T_IMAGE_URL):
             return (tag, url)
         log.info("Failed to parse image link url.")
+        self.error_handler.handle(UnexpectedTagException(TokenType.T_IMAGE_URL, self.curr_token.type))
         return False
 
     def parse_image_link_tag(self) -> (str, str) or bool:

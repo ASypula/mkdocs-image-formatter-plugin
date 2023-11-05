@@ -36,9 +36,7 @@ def test_given_only_image_link_then_image_link_returned():
 
 
 def test_given_image_links_mixed_with_other_tokens_then_image_links_returned():
-    parser = setup_parser(
-        "   @small \n (some/url.png) & word @big(next/longer.url.jpg)  word2"
-    )
+    parser = setup_parser("   @small \n (some/url.png) & word @big(next/longer.url.jpg)  word2")
     result = []
     for link in parser.parse():
         result.append(link)
@@ -47,9 +45,7 @@ def test_given_image_links_mixed_with_other_tokens_then_image_links_returned():
 
 
 def test_given_one_image_link_mixed_with_other_tokens_then_image_link_returned():
-    parser = setup_parser(
-        "   @small \n (some/url.png) & word @big *(next/longer.url.jpg)  word2"
-    )
+    parser = setup_parser("   @small \n (some/url.png) & word @big *(next/longer.url.jpg)  word2")
     result = []
     for link in parser.parse():
         result.append(link)
