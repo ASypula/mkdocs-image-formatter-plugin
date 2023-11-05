@@ -50,7 +50,16 @@ def test_given_complex_text_with_special_chars_then_sequence_of_tokens_is_return
         TokenType.T_IMAGE_SIZE_TAG,
         TokenType.T_IMAGE_URL,
     ]
-    expected_strings = ["word1", ",", "word2", "$", "$", "tag1-tag", "tag2", "start-of/url.png"]
+    expected_strings = [
+        "word1",
+        ",",
+        "word2",
+        "$",
+        "$",
+        "tag1-tag",
+        "tag2",
+        "start-of/url.png",
+    ]
     fp = io.StringIO(text)
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
@@ -64,7 +73,10 @@ def test_when_literal_starts_with_digit_then_literal_token_without_starting_digi
     fp = io.StringIO(text)
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
-    assert [token.type for token in tokens] == [TokenType.T_INTEGER, TokenType.T_LITERAL]
+    assert [token.type for token in tokens] == [
+        TokenType.T_INTEGER,
+        TokenType.T_LITERAL,
+    ]
     assert [token.string for token in tokens] == ["1", "hello"]
 
 
@@ -80,12 +92,22 @@ def test_given_text_when_tags_not_separated_by_spaces_then_tokens_returned():
         TokenType.T_CHAR,
         TokenType.T_LITERAL,
     ]
-    assert [token.string for token in tokens] == ["tag1", "url1.png", "one-more-tag", "&", "and_word"]
+    assert [token.string for token in tokens] == [
+        "tag1",
+        "url1.png",
+        "one-more-tag",
+        "&",
+        "and_word",
+    ]
 
 
 @pytest.mark.parametrize(
     "text, expected_types, expected_values",
-    [("1", [TokenType.T_INTEGER], [1]), ("41", [TokenType.T_INTEGER], [41]), ("5014", [TokenType.T_INTEGER], [5014])],
+    [
+        ("1", [TokenType.T_INTEGER], [1]),
+        ("41", [TokenType.T_INTEGER], [41]),
+        ("5014", [TokenType.T_INTEGER], [5014]),
+    ],
 )
 def test_given_integer_then_integer_token_is_returned(text, expected_types, expected_values):
     fp = io.StringIO(text)
@@ -134,7 +156,12 @@ def test_given_very_large_integer_then_integer_token_is_returned(text, expected_
     [
         (
             "2147483647",
-            [TokenType.T_INTEGER, TokenType.T_INTEGER, TokenType.T_INTEGER, TokenType.T_INTEGER],
+            [
+                TokenType.T_INTEGER,
+                TokenType.T_INTEGER,
+                TokenType.T_INTEGER,
+                TokenType.T_INTEGER,
+            ],
             [214, 748, 364, 7],
         ),
         (

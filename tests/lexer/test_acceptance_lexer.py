@@ -4,7 +4,7 @@ from tests.test_helpers import get_all_tokens
 
 
 def test_file1_literals():
-    filename = "lexer/test_files/test1.txt"
+    filename = "./resources/test_files/test1.txt"
     expected_types = [TokenType.T_LITERAL, TokenType.T_LITERAL]
     expected_strings = ["hello", "second"]
     with open(filename) as fp:
@@ -15,7 +15,7 @@ def test_file1_literals():
 
 
 def test_file2_mix():
-    filename = "lexer/test_files/test2.txt"
+    filename = "./resources/test_files/test2.txt"
     expected_types = [
         TokenType.T_INTEGER,
         TokenType.T_LITERAL,
