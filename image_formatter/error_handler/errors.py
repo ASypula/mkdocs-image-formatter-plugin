@@ -3,7 +3,7 @@ from image_formatter.lexer.token import TokenType
 
 class UnexpectedTagException(Exception):
     def __init__(self, expected: TokenType, actual: TokenType):
-        super(UnexpectedTagException, self)
+        super().__init__()
         self.expected = expected
         self.actual = actual
 
@@ -14,6 +14,4 @@ class UnexpectedTagException(Exception):
         if other.__class__ != self.__class__:
             return False
 
-        if (self.expected == other.expected) and (self.actual == other.actual):
-            return True
-        return False
+        return (self.expected == other.expected) and (self.actual == other.actual)
