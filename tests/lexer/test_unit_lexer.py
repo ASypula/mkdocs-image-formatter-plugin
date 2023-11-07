@@ -1,17 +1,29 @@
 from image_formatter.lexer.lexer import Lexer
 from image_formatter.lexer.token import TokenType
+from image_formatter.lexer.position import Position
 from tests.test_helpers import get_all_tokens
 import sys
 import io
 import pytest
 
 
-@pytest.mark.parametrize("text", ["one", "some-hyphen", "one two three", "with_underscore"])
-def test_given_only_plain_text_then_only_literal_tokens_are_returned(text):
+@pytest.mark.parametrize(
+    "text, positions",
+    [
+        ("one ", [Position(1, 1)]),
+        ("some-hyphen ", [Position(1, 1)]),
+        ("one two three ", [Position(1, 1), Position(1, 5), Position(1, 9)]),
+        ("with_underscore", [Position(1, 1)]),
+    ],
+)
+def test_given_only_plain_text_then_only_literal_tokens_are_returned(text, positions):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
     assert all(token.type == TokenType.T_LITERAL for token in tokens)
+    for token, position in zip(tokens, positions):
+        print(token.position, position)
+        assert token.position == position
 
 
 @pytest.mark.parametrize("text", ["@one", "@some-hyphen @hello", "@one \n", "  @with_underscore"])

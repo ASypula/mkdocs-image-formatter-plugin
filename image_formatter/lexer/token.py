@@ -1,5 +1,7 @@
 from enum import Enum
 
+from image_formatter.lexer.position import Position
+
 
 class TokenType(Enum):
     """
@@ -19,13 +21,14 @@ class Token:
     Class representing token.
     """
 
-    def __init__(self, type: TokenType, string: str = ""):
+    def __init__(self, type: TokenType, position: Position, string: str = ""):
         """
         Args:
             type: type of the token
             string: final version of token's text (additional characters e.g. '@' from tag is removed)
         """
         self.type = type
+        self.position = position
         self.string = string
 
 
@@ -34,6 +37,6 @@ class IntegerToken(Token):
     Class representing token of type int.
     """
 
-    def __init__(self, type: TokenType, integer: int):
-        super(IntegerToken, self).__init__(type, str(integer))
+    def __init__(self, type: TokenType, position: Position, integer: int):
+        super(IntegerToken, self).__init__(type, position, str(integer))
         self.integer = integer

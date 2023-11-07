@@ -1,7 +1,10 @@
 from image_formatter.lexer.token import Token, TokenType, IntegerToken
+from image_formatter.lexer.position import Position
 import io
 import sys
 from mkdocs.plugins import get_plugin_logger
+from copy import deepcopy
+
 
 log = get_plugin_logger(__name__)
 
@@ -29,6 +32,7 @@ class Lexer:
         self.fp = fp
         self.running = True
         self.max_int = max_int
+        self.current_position = Position(1, 0)
 
     @staticmethod
     def name() -> str:
@@ -52,8 +56,15 @@ class Lexer:
         lexer finished all work.
         """
         self.curr_char = self.fp.read(1)
+        self._update_current_position()
         if not self.curr_char:
             self.running = False
+
+    def _update_current_position(self) -> None:
+        if self.curr_char == "\n":
+            self.current_position.move_to_next_line()
+        else:
+            self.current_position.move_right()
 
     def build_char(self) -> Token | None:
         """
@@ -67,9 +78,10 @@ class Lexer:
         if self.curr_char.isspace():
             self.next_char()
             return None
+        position = deepcopy(self.current_position)
         char = self.curr_char
         self.next_char()
-        return Token(TokenType.T_CHAR, char)
+        return Token(TokenType.T_CHAR, position, char)
 
     def build_literal(self) -> Token | None:
         """
@@ -82,12 +94,13 @@ class Lexer:
         """
         if not self.curr_char.isalpha():
             return self.build_char()
+        position = deepcopy(self.current_position)
         literal = self.curr_char
         self.next_char()
         while Lexer.is_character(self.curr_char):
             literal += self.curr_char
             self.next_char()
-        return Token(TokenType.T_LITERAL, literal)
+        return Token(TokenType.T_LITERAL, position, literal)
 
     def build_integer(self) -> IntegerToken | None:
         """
@@ -105,6 +118,7 @@ class Lexer:
         if not self.curr_char.isdigit():
             log.info(f"{Lexer.name()}: Failed to build an integer. No digit provided.")
             return None
+        position = deepcopy(self.current_position)
         number = int(self.curr_char)
         self.next_char()
         if number != 0:
@@ -112,7 +126,7 @@ class Lexer:
                 number = number * 10 + int(self.curr_char)
                 self.next_char()
         log.info(f"{Lexer.name()}: Integer built successfully. Returning 'T_INTEGER' token.")
-        return IntegerToken(TokenType.T_INTEGER, number)
+        return IntegerToken(TokenType.T_INTEGER, position, number)
 
     def _is_number_in_range(self, number):
         return number * 10 + int(self.curr_char) <= self.max_int
@@ -131,12 +145,13 @@ class Lexer:
             log.info(f"{Lexer.name()}: Failed to build a tag. Missing '{TAG_CHAR}'.")
             return None
         self.next_char()
+        position = deepcopy(self.current_position)
         token = self.build_literal()
         if token.type != TokenType.T_LITERAL:
             log.info(f"{Lexer.name()}: Failed to build a tag. Missing token 'T_LITERAL'.")
             return None
         log.info(f"{Lexer.name()}: Tag built successfully. Returning 'T_IMAGE_SIZE_TAG' token.")
-        return Token(TokenType.T_IMAGE_SIZE_TAG, token.string)
+        return Token(TokenType.T_IMAGE_SIZE_TAG, position, token.string)
 
     def get_url_ending(self, string: str) -> str | None:
         """
@@ -175,6 +190,7 @@ class Lexer:
             log.info(f"{Lexer.name()}: Failed to build an url. Missing '('.)")
             return None
         self.next_char()
+        position = deepcopy(self.current_position)
         string = ""
         while Lexer.is_character(self.curr_char) or self.curr_char == "/":
             string += self.curr_char
@@ -187,7 +203,7 @@ class Lexer:
             return None
         self.next_char()
         log.info(f"{Lexer.name()}: Image url built successfully. Returning 'T_IMAGE_URL' token.")
-        return Token(TokenType.T_IMAGE_URL, string)
+        return Token(TokenType.T_IMAGE_URL, position, string)
 
     def get_token(self) -> Token:
         """
@@ -210,4 +226,4 @@ class Lexer:
                 return token
         else:
             log.info(f"{Lexer.name()}: Lexer finished work. Returning 'T_EOF' token.")
-            return Token(TokenType.T_EOF)
+            return Token(TokenType.T_EOF, self.current_position)

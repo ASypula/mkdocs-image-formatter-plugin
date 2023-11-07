@@ -3,14 +3,15 @@ from image_formatter.parser.parser import Parser
 from image_formatter.lexer.token import Token, TokenType
 from image_formatter.error_handler.error_handler import ErrorHandler
 from image_formatter.error_handler.errors import UnexpectedTagException
+from image_formatter.lexer.position import Position
 from tests.test_helpers import get_all_parser_results
 
 
 def test_given_tag_when_not_followed_by_url_then_exception_is_registered():
     mock_lexer = Mock()
     mock_lexer.get_token.side_effect = [
-        Token(TokenType.T_IMAGE_SIZE_TAG, "small"),
-        Token(TokenType.T_CHAR, "$"),
+        Token(TokenType.T_IMAGE_SIZE_TAG, Position(1, 1), "small"),
+        Token(TokenType.T_CHAR, Position(2, 1), "$"),
         "",
     ]
     error_handler = ErrorHandler()
@@ -23,9 +24,9 @@ def test_given_tag_when_not_followed_by_url_then_exception_is_registered():
 def test_given_tag_when_followed_by_another_tag_with_url_then_exception_is_registered_and_tag_is_parsed():
     mock_lexer = Mock()
     mock_lexer.get_token.side_effect = [
-        Token(TokenType.T_IMAGE_SIZE_TAG, "small"),
-        Token(TokenType.T_IMAGE_SIZE_TAG, "small-2"),
-        Token(TokenType.T_IMAGE_URL, "some/url.png"),
+        Token(TokenType.T_IMAGE_SIZE_TAG, Position(1, 1), "small"),
+        Token(TokenType.T_IMAGE_SIZE_TAG, Position(2, 1), "small-2"),
+        Token(TokenType.T_IMAGE_URL, Position(3, 1), "some/url.png"),
         "",
     ]
     error_handler = ErrorHandler()
