@@ -37,7 +37,7 @@ class ImageFormatterPlugin(mkdocs.plugins.BasePlugin[ImageFormatterConfig]):
         """
         Verifies if tags are defined correctly. Each tag should specify width and height in vaild CSS form.
         """
-        size_tags = config["image_size"]
+        size_tags = config["image_formatter"]
         for tag, options in size_tags.items():
             if WIDTH not in options or HEIGHT not in options:
                 raise mkdocs.config.base.ValidationError(f"width or height is missing from {tag} tag configuration")
