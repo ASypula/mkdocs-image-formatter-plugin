@@ -7,7 +7,9 @@ from mkdocs.structure.files import File
 from mkdocs.structure.pages import Page
 from mkdocs.config.defaults import MkDocsConfig
 
-from image_formatter.image_formatter_plugin.image_formatter_plugin import ImageFormatterPlugin
+from image_formatter.image_formatter_plugin.image_formatter_plugin import (
+    ImageFormatterPlugin,
+)
 
 TEST_DIR = "test"
 TEST_FILE = "test.md"
@@ -36,7 +38,11 @@ def test_converts_basic(image_formatter_plugin, temp_directory):
     with open(file_path, "w") as f:
         f.write("some test page")
 
-    page = Page(title="Test", file=File(file_path, temp_directory, temp_directory, False), config={})
+    page = Page(
+        title="Test",
+        file=File(file_path, temp_directory, temp_directory, False),
+        config={},
+    )
 
     image_sizes = {
         "image_formatter": {

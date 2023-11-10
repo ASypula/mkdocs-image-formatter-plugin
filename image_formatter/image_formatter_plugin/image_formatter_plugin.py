@@ -17,13 +17,19 @@ HEIGHT = "height"
 logger = logging.getLogger("mkdocs.plugins")
 
 
-def validate_dimentions(dimentions: str) -> None:
-    """Validates if dimentions are valid in CSS form"""
-    style = cssutils.parseStyle(f"width: {dimentions};")
-    if not style.valid or len(dimentions) == 0:
-        err_msg = f"provided invalid dimensions: {dimentions}"
-        logger.error(err_msg)
-        raise mkdocs.config.base.ValidationError(err_msg)
+def log_and_raise_validation_error(error_message: str) -> None:
+    logger.error(error_message)
+    raise mkdocs.config.base.ValidationError(error_message)
+
+
+def validate_dimensions(dimensions: tuple[str, str]) -> None:
+    """Validates if dimensions are valid in CSS form"""
+    if len(dimensions) != 2:
+        log_and_raise_validation_error(f"Expected 2 elements in tuple but {len(dimensions)} provided")
+    dimension, units = dimensions
+    style = cssutils.parseStyle(f"{dimension}: {units};")
+    if not style.valid:
+        log_and_raise_validation_error(f"provided invalid dimensions: {dimensions}")
 
 
 class ImageFormatterConfig(mkdocs.config.base.Config):
@@ -31,19 +37,19 @@ class ImageFormatterConfig(mkdocs.config.base.Config):
 
 
 class ImageFormatterPlugin(mkdocs.plugins.BasePlugin[ImageFormatterConfig]):
-    """Main plugin class, defines what shuld happen in each plugin event"""
+    """Main plugin class, defines what should happen in each plugin event"""
 
     def on_config(self, config: MkDocsConfig) -> MkDocsConfig | None:
         """
-        Verifies if tags are defined correctly. Each tag should specify width and height in vaild CSS form.
+        Verifies if tags are defined correctly. Each tag should specify width and height in valid CSS form.
         """
         size_tags = config["image_formatter"]
         for tag, options in size_tags.items():
             if WIDTH not in options or HEIGHT not in options:
                 raise mkdocs.config.base.ValidationError(f"width or height is missing from {tag} tag configuration")
 
-            validate_dimentions(options[WIDTH])
-            validate_dimentions(options[HEIGHT])
+            validate_dimensions((WIDTH, options[WIDTH]))
+            validate_dimensions((HEIGHT, options[HEIGHT]))
 
         logger.info("configuration validation finished successfully")
         return config
