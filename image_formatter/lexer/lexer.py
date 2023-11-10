@@ -61,6 +61,9 @@ class Lexer:
             self.running = False
 
     def _update_current_position(self) -> None:
+        """
+        Updates lexer position in the text / text stream.
+        """
         if self.curr_char == "\n":
             self.current_position.move_to_next_line()
         else:

@@ -1,16 +1,31 @@
 class Position:
-    def __init__(self, line, column):
+    """
+    Class position represents cursor position in text / text stream.
+    """
+
+    def __init__(self, line: int = 1, column: int = 0):
+        """
+        Args:
+            line: line number in analyzed text / text stream
+            column: column number in analyzed text / text_stream
+        """
         self.line = line
         self.column = column
 
     def move_to_next_line(self) -> None:
+        """
+        Updates position to represent the first character in next line of the text.
+        """
         self.line += 1
-        self.column = 1
+        self.column = 0
 
     def move_right(self) -> None:
+        """
+        Updates position to represent the next character in current line of the text.
+        """
         self.column += 1
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if self.__class__ != other.__class__:
             return False
 
