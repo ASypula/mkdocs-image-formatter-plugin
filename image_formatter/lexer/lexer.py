@@ -10,6 +10,7 @@ log = get_plugin_logger(__name__)
 
 SPECIAL_SIGNS = ["-", "_"]
 TAG_CHAR = "@"
+NEWLINE_CHARACTERS = ["\n", "\r"]
 
 
 class Lexer:
@@ -64,7 +65,7 @@ class Lexer:
         """
         Updates lexer position in the text / text stream.
         """
-        if self.curr_char == "\n":
+        if self.curr_char in NEWLINE_CHARACTERS:
             self.current_position.move_to_next_line()
         else:
             self.current_position.move_right()

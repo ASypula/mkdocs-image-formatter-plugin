@@ -22,7 +22,6 @@ def test_given_only_plain_text_then_only_literal_tokens_are_returned(text, posit
     tokens = get_all_tokens(lexer)
     assert all(token.type == TokenType.T_LITERAL for token in tokens)
     for token, position in zip(tokens, positions):
-        print(token.position, position)
         assert token.position == position
 
 
@@ -198,3 +197,20 @@ def test_given_max_int_set_to_1000_when_int_exceeds_max_int_then_multiple_intege
     tokens = get_all_tokens(lexer)
     assert [token.type for token in tokens] == expected_types
     assert [token.integer for token in tokens] == expected_values
+
+
+@pytest.mark.parametrize(
+    "text, positions",
+    [
+        ("\none ", [Position(2, 1)]),
+        ("\rtwo", [Position(2, 1)]),
+        ("\n\rthree", [Position(3, 1)]),
+    ],
+)
+def test_given_different_newline_symbols_then_position_is_updated_accordingly(text, positions):
+    fp = io.StringIO(text)
+    lexer = Lexer(fp)
+    tokens = get_all_tokens(lexer)
+    assert all(token.type == TokenType.T_LITERAL for token in tokens)
+    for token, position in zip(tokens, positions):
+        assert token.position == position
