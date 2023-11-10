@@ -14,7 +14,7 @@ class Position:
 
     def move_to_next_line(self) -> None:
         """
-        Updates position to represent the first character in next line of the text.
+        Updates position to represent the position before the first character in next line of the text.
         """
         self.line += 1
         self.column = 0
