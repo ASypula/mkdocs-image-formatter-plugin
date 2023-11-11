@@ -48,7 +48,7 @@ class Lexer:
         if not self.curr_char:
             self.running = False
 
-    def build_char(self) -> Token | None:
+    def build_char(self) -> Token or None:
         """
         Tries to build a character token.
         It includes all characters and only whitespaces are omitted.
@@ -64,7 +64,7 @@ class Lexer:
         self.next_char()
         return Token(TokenType.T_CHAR, char)
 
-    def build_literal(self) -> Token | None:
+    def build_literal(self) -> Token or None:
         """
         Tries to build a literal token according to:
         literal = letter, { letter | literal_special_sign | digit }
@@ -82,7 +82,7 @@ class Lexer:
             self.next_char()
         return Token(TokenType.T_LITERAL, literal)
 
-    def build_integer(self) -> IntegerToken | None:
+    def build_integer(self) -> IntegerToken or None:
         """
         Tries to build an integer token according to:
         integer         = zero_digit | (non_zero_digit, { digit })
@@ -107,7 +107,7 @@ class Lexer:
     def _is_number_in_range(self, number):
         return number * 10 + int(self.curr_char) <= self.max_int
 
-    def build_tag(self) -> Token | None:
+    def build_tag(self) -> Token or None:
         """
         Tries to build an image tag token according to:
         image_size_tag = '@', literal
@@ -124,7 +124,7 @@ class Lexer:
             return None
         return Token(TokenType.T_IMAGE_SIZE_TAG, token.string)
 
-    def get_url_ending(self, string: str) -> str | None:
+    def get_url_ending(self, string: str) -> str or None:
         """
         Gets the remaining part of url after the first dot (dot is required at least once in an url)
 
@@ -144,7 +144,7 @@ class Lexer:
             self.next_char()
         return string
 
-    def build_url(self) -> Token | None:
+    def build_url(self) -> Token or None:
         """
         Tries to build a url token according to:
         image_url = '(', { '/' | '.' | literal}, '.', literal, ')'

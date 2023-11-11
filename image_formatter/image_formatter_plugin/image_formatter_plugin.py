@@ -10,6 +10,7 @@ from mkdocs.structure.pages import Page
 import mkdocs.plugins
 import cssutils
 import logging
+from typing import Tuple
 
 WIDTH = "width"
 HEIGHT = "height"
@@ -22,7 +23,7 @@ def log_and_raise_validation_error(error_message: str) -> None:
     raise mkdocs.config.base.ValidationError(error_message)
 
 
-def validate_dimensions(dimensions: tuple[str, str]) -> None:
+def validate_dimensions(dimensions: Tuple[str, str]) -> None:
     """Validates if dimensions are valid in CSS form"""
     if len(dimensions) != 2:
         log_and_raise_validation_error(f"Expected 2 elements in tuple but {len(dimensions)} provided")
@@ -39,7 +40,7 @@ class ImageFormatterConfig(mkdocs.config.base.Config):
 class ImageFormatterPlugin(mkdocs.plugins.BasePlugin[ImageFormatterConfig]):
     """Main plugin class, defines what should happen in each plugin event"""
 
-    def on_config(self, config: MkDocsConfig) -> MkDocsConfig | None:
+    def on_config(self, config: MkDocsConfig) -> MkDocsConfig or None:
         """
         Verifies if tags are defined correctly. Each tag should specify width and height in valid CSS form.
         """
@@ -54,7 +55,7 @@ class ImageFormatterPlugin(mkdocs.plugins.BasePlugin[ImageFormatterConfig]):
         logger.info("configuration validation finished successfully")
         return config
 
-    def on_page_read_source(self, page: Page, config: MkDocsConfig) -> str | None:
+    def on_page_read_source(self, page: Page, config: MkDocsConfig) -> str or None:
         # todo: using lexer, parser and interpreter read user's docs and apply sizes specified in tags
 
         pass

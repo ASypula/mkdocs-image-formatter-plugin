@@ -1,16 +1,25 @@
+.ONESHELL:
+
+PYTHON = ./venv/bin/python3
+PIP = ./venv/bin/pip
+
 tests:
 	pytest
 
 pre_commit:
-	pytest .
-	black . -l 120
+	tox
+
+venv/bin/activate: requirements.txt
+	python3 -m venv venv
+	chmod +x venv/bin/activate
+	. ./venv/bin/activate
+	$(PIP) install -r requirements.txt
+
+setup: venv/bin/activate
 
 clean:
 	rm -rf __pycache__
-
-setup:
-	python3.10 -m venv venv
-	source venv/bin/activate
-	pip install -r requirements.txt
+	rm -rf venv
+	rm -rf .tox
 
 .PHONY: tests clean pre_commit

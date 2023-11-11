@@ -22,7 +22,7 @@ class ImageSizeConfig(mkdocs.config.base.Config):
 
 
 class ImageSizePlugin(mkdocs.plugins.BasePlugin[ImageSizeConfig]):
-    """Main plugin class, defines what shuld happen in each plugin event"""
+    """Main plugin class, defines what should happen in each plugin event"""
 
     def on_config(self, config: dict) -> dict:
         """
@@ -38,6 +38,6 @@ class ImageSizePlugin(mkdocs.plugins.BasePlugin[ImageSizeConfig]):
 
         return config
 
-    def on_page_read_source() -> str | None:
+    def on_page_read_source() -> str or None:
         # todo: using lexer, parser and interpreter read user's docs and apply sizes specified in tags
         pass
