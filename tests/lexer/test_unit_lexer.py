@@ -156,7 +156,7 @@ def test_given_integer_then_integer_token_is_returned(text, expected_types, expe
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
     assert [token.type for token in tokens] == expected_types
-    assert [token.integer for token in tokens] == expected_values
+    assert [token.integer for token in tokens] == expected_values  # noqa
     assert [token.position for token in tokens] == expected_positions
 
 
@@ -175,7 +175,7 @@ def test_given_digits_when_zero_is_the_first_one_then_two_integer_tokens_are_ret
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
     assert [token.type for token in tokens] == expected_types
-    assert [token.integer for token in tokens] == expected_values
+    assert [token.integer for token in tokens] == expected_values  # noqa
     assert [token.position for token in tokens] == expected_positions
 
 
@@ -194,7 +194,7 @@ def test_given_very_large_integer_then_integer_token_is_returned(
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
     assert [token.type for token in tokens] == expected_types
-    assert [token.integer for token in tokens] == expected_values
+    assert [token.integer for token in tokens] == expected_values  # noqa
     assert [token.position for token in tokens] == expected_positions
 
 
@@ -234,7 +234,7 @@ def test_given_max_int_set_to_1000_when_int_exceeds_max_int_then_multiple_intege
     lexer = Lexer(fp, max_int=1000)
     tokens = get_all_tokens(lexer)
     assert [token.type for token in tokens] == expected_types
-    assert [token.integer for token in tokens] == expected_values
+    assert [token.integer for token in tokens] == expected_values  # noqa
     assert [token.position for token in tokens] == expected_positions
 
 
