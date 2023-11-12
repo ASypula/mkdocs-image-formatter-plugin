@@ -83,12 +83,23 @@ def test_given_complex_text_with_special_chars_then_sequence_of_tokens_is_return
         "tag2",
         "start-of/url.png",
     ]
+    expected_positions = [
+        Position(1, 1),
+        Position(1, 6),
+        Position(1, 8),
+        Position(1, 14),
+        Position(1, 15),
+        Position(1, 17),
+        Position(3, 2),
+        Position(3, 7),
+    ]
     fp = io.StringIO(text)
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
     assert len(tokens) == len(expected_types)
     assert [token.type for token in tokens] == expected_types
     assert [token.string for token in tokens] == expected_strings
+    assert [token.position for token in tokens] == expected_positions
 
 
 def test_when_literal_starts_with_digit_then_literal_token_without_starting_digit_returned():
@@ -101,6 +112,7 @@ def test_when_literal_starts_with_digit_then_literal_token_without_starting_digi
         TokenType.T_LITERAL,
     ]
     assert [token.string for token in tokens] == ["1", "hello"]
+    assert [token.position for token in tokens] == [Position(1, 1), Position(1, 2)]
 
 
 def test_given_text_when_tags_not_separated_by_spaces_then_tokens_returned():
@@ -122,60 +134,72 @@ def test_given_text_when_tags_not_separated_by_spaces_then_tokens_returned():
         "&",
         "and_word",
     ]
+    assert [token.position for token in tokens] == [
+        Position(1, 1),
+        Position(1, 6),
+        Position(1, 16),
+        Position(1, 29),
+        Position(1, 30),
+    ]
 
 
 @pytest.mark.parametrize(
-    "text, expected_types, expected_values",
+    "text, expected_types, expected_values, expected_positions",
     [
-        ("1", [TokenType.T_INTEGER], [1]),
-        ("41", [TokenType.T_INTEGER], [41]),
-        ("5014", [TokenType.T_INTEGER], [5014]),
+        ("1", [TokenType.T_INTEGER], [1], [Position(1, 1)]),
+        ("41", [TokenType.T_INTEGER], [41], [Position(1, 1)]),
+        ("5014", [TokenType.T_INTEGER], [5014], [Position(1, 1)]),
     ],
 )
-def test_given_integer_then_integer_token_is_returned(text, expected_types, expected_values):
+def test_given_integer_then_integer_token_is_returned(text, expected_types, expected_values, expected_positions):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
     assert [token.type for token in tokens] == expected_types
     assert [token.integer for token in tokens] == expected_values
+    assert [token.position for token in tokens] == expected_positions
 
 
 @pytest.mark.parametrize(
-    "text, expected_types, expected_values",
+    "text, expected_types, expected_values, expected_positions",
     [
-        ("01", [TokenType.T_INTEGER, TokenType.T_INTEGER], [0, 1]),
-        ("041", [TokenType.T_INTEGER, TokenType.T_INTEGER], [0, 41]),
-        ("05014", [TokenType.T_INTEGER, TokenType.T_INTEGER], [0, 5014]),
+        ("01", [TokenType.T_INTEGER, TokenType.T_INTEGER], [0, 1], [Position(1, 1), Position(1, 2)]),
+        ("041", [TokenType.T_INTEGER, TokenType.T_INTEGER], [0, 41], [Position(1, 1), Position(1, 2)]),
+        ("05014", [TokenType.T_INTEGER, TokenType.T_INTEGER], [0, 5014], [Position(1, 1), Position(1, 2)]),
     ],
 )
-def test_given_digits_when_zero_is_the_first_one_then_two_integer_tokens_are_retuned(
-    text, expected_types, expected_values
+def test_given_digits_when_zero_is_the_first_one_then_two_integer_tokens_are_returned(
+    text, expected_types, expected_values, expected_positions
 ):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
     assert [token.type for token in tokens] == expected_types
     assert [token.integer for token in tokens] == expected_values
+    assert [token.position for token in tokens] == expected_positions
 
 
 @pytest.mark.parametrize(
-    "text, expected_types, expected_values",
+    "text, expected_types, expected_values, expected_positions",
     [
-        ("2147483647", [TokenType.T_INTEGER], [2147483647]),
-        ("21474836470000", [TokenType.T_INTEGER], [21474836470000]),
-        (f"{sys.maxsize}", [TokenType.T_INTEGER], [sys.maxsize]),
+        ("2147483647", [TokenType.T_INTEGER], [2147483647], [Position(1, 1)]),
+        ("21474836470000", [TokenType.T_INTEGER], [21474836470000], [Position(1, 1)]),
+        (f"{sys.maxsize}", [TokenType.T_INTEGER], [sys.maxsize], [Position(1, 1)]),
     ],
 )
-def test_given_very_large_integer_then_integer_token_is_returned(text, expected_types, expected_values):
+def test_given_very_large_integer_then_integer_token_is_returned(
+    text, expected_types, expected_values, expected_positions
+):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
     assert [token.type for token in tokens] == expected_types
     assert [token.integer for token in tokens] == expected_values
+    assert [token.position for token in tokens] == expected_positions
 
 
 @pytest.mark.parametrize(
-    "text, expected_types, expected_values",
+    "text, expected_types, expected_values, expected_positions",
     [
         (
             "2147483647",
@@ -186,6 +210,7 @@ def test_given_very_large_integer_then_integer_token_is_returned(text, expected_
                 TokenType.T_INTEGER,
             ],
             [214, 748, 364, 7],
+            [Position(1, 1), Position(1, 4), Position(1, 7), Position(1, 10)],
         ),
         (
             "21474836470000",
@@ -198,17 +223,19 @@ def test_given_very_large_integer_then_integer_token_is_returned(text, expected_
                 TokenType.T_INTEGER,
             ],
             [214, 748, 364, 700, 0, 0],
+            [Position(1, 1), Position(1, 4), Position(1, 7), Position(1, 10), Position(1, 13), Position(1, 14)],
         ),
     ],
 )
 def test_given_max_int_set_to_1000_when_int_exceeds_max_int_then_multiple_integer_tokens_are_returned(
-    text, expected_types, expected_values
+    text, expected_types, expected_values, expected_positions
 ):
     fp = io.StringIO(text)
     lexer = Lexer(fp, max_int=1000)
     tokens = get_all_tokens(lexer)
     assert [token.type for token in tokens] == expected_types
     assert [token.integer for token in tokens] == expected_values
+    assert [token.position for token in tokens] == expected_positions
 
 
 @pytest.mark.parametrize(
