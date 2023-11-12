@@ -7,6 +7,16 @@ import io
 import pytest
 
 
+def test_given_only_positional_arguments_then_attributes_corresponding_to_kwargs_have_default_values():
+    text = ""
+    fp = io.StringIO(text)
+    lexer = Lexer(fp)
+    assert lexer.max_int == sys.maxsize
+    assert lexer.special_signs == ("-", "_")
+    assert lexer.tag == "@"
+    assert lexer.newline_characters == ("\n", "\r")
+
+
 @pytest.mark.parametrize(
     "text, positions",
     [

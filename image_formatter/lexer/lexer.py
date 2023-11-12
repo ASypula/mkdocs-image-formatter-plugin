@@ -5,12 +5,7 @@ import sys
 from mkdocs.plugins import get_plugin_logger
 from copy import deepcopy
 
-
 log = get_plugin_logger(__name__)
-
-SPECIAL_SIGNS = ["-", "_"]
-TAG_CHAR = "@"
-NEWLINE_CHARACTERS = ["\n", "\r"]
 
 
 class Lexer:
@@ -23,24 +18,39 @@ class Lexer:
 
     curr_char = ""
 
-    def __init__(self, fp: io.TextIOWrapper, max_int: int = sys.maxsize):
+    def __init__(
+        self,
+        fp: io.TextIOWrapper,
+        *,
+        max_int: int = sys.maxsize,
+        special_signs: tuple = ("-", "_"),
+        tag: str = "@",
+        newline_characters: tuple = ("\n", "\r"),
+    ):
         """
         Args:
             fp: file pointer to open file for reading
+        Kwargs:
+            max_int: defines integer maximal value that the lexer can build
+            special_signs: defines which special signs can be used in strings
+            tag: defines character that is used to find image tags
+            newline_characters: defines which characters should be treated as newlines
 
         running: defines if lexer should still go through the characters or EOF was encountered
         """
         self.fp = fp
         self.running = True
-        self.max_int = max_int
         self.current_position = Position(1, 0)
+        self.max_int = max_int
+        self.tag = tag
+        self.special_signs = special_signs
+        self.newline_characters = newline_characters
 
     @staticmethod
     def name() -> str:
         return __class__.__name__
 
-    @staticmethod
-    def is_character(char: str) -> bool:
+    def is_character(self) -> bool:
         """
         Checks for valid character in literal
 
@@ -48,7 +58,7 @@ class Lexer:
             True if the string is alphanumeric or among the valid special signs
             False otherwise
         """
-        return char.isalnum() or char in SPECIAL_SIGNS
+        return self.curr_char.isalnum() or self.curr_char in self.special_signs
 
     def next_char(self) -> None:
         """
@@ -65,7 +75,7 @@ class Lexer:
         """
         Updates lexer position in the text / text stream.
         """
-        if self.curr_char in NEWLINE_CHARACTERS:
+        if self.curr_char in self.newline_characters:
             self.current_position.move_to_next_line()
         else:
             self.current_position.move_right()
@@ -101,7 +111,7 @@ class Lexer:
         literal = self.curr_char
         position = deepcopy(self.current_position)
         self.next_char()
-        while Lexer.is_character(self.curr_char):
+        while self.is_character():
             literal += self.curr_char
             self.next_char()
         return Token(TokenType.T_LITERAL, position, literal)
@@ -145,8 +155,8 @@ class Lexer:
             None if the tag cannot be built
         """
         log.info("Trying to build a tag.")
-        if not self.curr_char == TAG_CHAR:
-            log.info(f"{Lexer.name()}: Failed to build a tag. Missing '{TAG_CHAR}'.")
+        if not self.curr_char == self.tag:
+            log.info(f"{Lexer.name()}: Failed to build a tag. Missing '{self.tag}'.")
             return None
         position = deepcopy(self.current_position)
         self.next_char()
@@ -174,7 +184,7 @@ class Lexer:
             return None
         string += self.curr_char
         self.next_char()
-        while Lexer.is_character(self.curr_char) or self.curr_char in ["/", "."]:
+        while self.is_character() or self.curr_char in ["/", "."]:
             string += self.curr_char
             self.next_char()
         log.info(f"{Lexer.name()}: Url ending built successfully.")
@@ -196,7 +206,7 @@ class Lexer:
         position = deepcopy(self.current_position)
         self.next_char()
         string = ""
-        while Lexer.is_character(self.curr_char) or self.curr_char == "/":
+        while self.is_character() or self.curr_char == "/":
             string += self.curr_char
             self.next_char()
         if not (string := self.get_url_ending(string)):
