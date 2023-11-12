@@ -10,7 +10,7 @@ def test_file1_literals():
     expected_strings = ["hello", "second"]
     expected_positions = [Position(1, 1), Position(2, 1)]
     with open(filename) as fp:
-        lexer = Lexer(fp)
+        lexer = Lexer(fp)  # noqa
         tokens = get_all_tokens(lexer)
     assert [token.type for token in tokens] == expected_types
     assert [token.string for token in tokens] == expected_strings
@@ -37,7 +37,7 @@ def test_file2_mix():
         Position(2, 16),
     ]
     with open(filename) as fp:
-        lexer = Lexer(fp)
+        lexer = Lexer(fp)  # noqa
         tokens = get_all_tokens(lexer)
     assert [token.type for token in tokens] == expected_types
     assert [token.string for token in tokens] == expected_strings
