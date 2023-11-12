@@ -42,3 +42,37 @@ def test_file2_mix():
     assert [token.type for token in tokens] == expected_types
     assert [token.string for token in tokens] == expected_strings
     assert [token.position for token in tokens] == expected_positions
+
+
+def test_file3_classic_macos_newline():
+    filename = "./resources/test_files/test3_classic_macos_newline.txt"
+    expected_types = [
+        TokenType.T_INTEGER,
+        TokenType.T_LITERAL,
+        TokenType.T_IMAGE_URL,
+    ]
+    expected_strings = ["1", "hello1", "some/url.com"]
+    expected_positions = [Position(1, 1), Position(1, 2), Position(2, 1)]
+    with open(filename) as fp:
+        lexer = Lexer(fp)  # noqa
+        tokens = get_all_tokens(lexer)
+    assert [token.type for token in tokens] == expected_types
+    assert [token.string for token in tokens] == expected_strings
+    assert [token.position for token in tokens] == expected_positions
+
+
+def test_file4_unix_and_macos_newline():
+    filename = "./resources/test_files/test4_unix_and_macos_newline.txt"
+    expected_types = [
+        TokenType.T_INTEGER,
+        TokenType.T_LITERAL,
+        TokenType.T_IMAGE_URL,
+    ]
+    expected_strings = ["1", "hello1", "some/url.com"]
+    expected_positions = [Position(1, 1), Position(1, 2), Position(2, 1)]
+    with open(filename) as fp:
+        lexer = Lexer(fp)  # noqa
+        tokens = get_all_tokens(lexer)
+    assert [token.type for token in tokens] == expected_types
+    assert [token.string for token in tokens] == expected_strings
+    assert [token.position for token in tokens] == expected_positions

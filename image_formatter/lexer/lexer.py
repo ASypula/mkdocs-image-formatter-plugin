@@ -192,7 +192,7 @@ class Lexer:
 
     def build_url(self) -> Token | None:
         """
-        Tries to build a url token according to:
+        Tries to build an url token according to:
         image_url = '(', { '/' | '.' | literal}, '.', literal, ')'
 
         Returns:
