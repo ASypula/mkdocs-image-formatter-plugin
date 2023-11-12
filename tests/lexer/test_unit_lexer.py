@@ -25,28 +25,40 @@ def test_given_only_plain_text_then_only_literal_tokens_are_returned(text, posit
         assert token.position == position
 
 
-@pytest.mark.parametrize("text", ["@one", "@some-hyphen @hello", "@one \n", "  @with_underscore"])
-def test_given_only_tags_then_only_tag_tokens_are_returned(text):
+@pytest.mark.parametrize(
+    "text, positions",
+    [
+        ("@one", [Position(1, 1)]),
+        ("@some-hyphen @hello", [Position(1, 1), Position(1, 14)]),
+        ("\n@one \n", [Position(2, 1)]),
+        ("  @with_underscore", [Position(1, 3)]),
+    ],
+)
+def test_given_only_tags_then_only_tag_tokens_are_returned(text, positions):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
     assert all(token.type == TokenType.T_IMAGE_SIZE_TAG for token in tokens)
+    for token, position in zip(tokens, positions):
+        assert token.position == position
 
 
 @pytest.mark.parametrize(
-    "text",
+    "text, positions",
     [
-        "(one/two/three.com)",
-        "    (hi/some-hyphen.png)",
-        "\n (with.many.dots/one.jpg)",
-        "  \t(url1.png.url2/url3.jpg)",
+        ("(one/two/three.com)", [Position(1, 1)]),
+        ("    (hi/some-hyphen.png)", [Position(1, 5)]),
+        ("\n (with.many.dots/one.jpg)", [Position(2, 2)]),
+        ("  \t(url1.png.url2/url3.jpg)", [Position(1, 4)]),
     ],
 )
-def test_given_only_urls_then_only_url_tokens_are_returned(text):
+def test_given_only_urls_then_only_url_tokens_are_returned(text, positions):
     fp = io.StringIO(text)
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
     assert all(token.type == TokenType.T_IMAGE_URL for token in tokens)
+    for token, position in zip(tokens, positions):
+        assert token.position == position
 
 
 def test_given_complex_text_with_special_chars_then_sequence_of_tokens_is_returned():

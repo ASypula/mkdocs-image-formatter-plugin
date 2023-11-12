@@ -82,8 +82,8 @@ class Lexer:
         if self.curr_char.isspace():
             self.next_char()
             return None
-        position = deepcopy(self.current_position)
         char = self.curr_char
+        position = deepcopy(self.current_position)
         self.next_char()
         return Token(TokenType.T_CHAR, position, char)
 
@@ -98,8 +98,8 @@ class Lexer:
         """
         if not self.curr_char.isalpha():
             return self.build_char()
-        position = deepcopy(self.current_position)
         literal = self.curr_char
+        position = deepcopy(self.current_position)
         self.next_char()
         while Lexer.is_character(self.curr_char):
             literal += self.curr_char
@@ -122,8 +122,8 @@ class Lexer:
         if not self.curr_char.isdigit():
             log.info(f"{Lexer.name()}: Failed to build an integer. No digit provided.")
             return None
-        position = deepcopy(self.current_position)
         number = int(self.curr_char)
+        position = deepcopy(self.current_position)
         self.next_char()
         if number != 0:
             while self.curr_char.isdigit() and self._is_number_in_range(number):
@@ -148,8 +148,8 @@ class Lexer:
         if not self.curr_char == TAG_CHAR:
             log.info(f"{Lexer.name()}: Failed to build a tag. Missing '{TAG_CHAR}'.")
             return None
-        self.next_char()
         position = deepcopy(self.current_position)
+        self.next_char()
         token = self.build_literal()
         if token.type != TokenType.T_LITERAL:
             log.info(f"{Lexer.name()}: Failed to build a tag. Missing token 'T_LITERAL'.")
@@ -193,8 +193,8 @@ class Lexer:
         if not self.curr_char == "(":
             log.info(f"{Lexer.name()}: Failed to build an url. Missing '('.)")
             return None
-        self.next_char()
         position = deepcopy(self.current_position)
+        self.next_char()
         string = ""
         while Lexer.is_character(self.curr_char) or self.curr_char == "/":
             string += self.curr_char
