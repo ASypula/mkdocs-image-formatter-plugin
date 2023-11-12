@@ -26,7 +26,7 @@ class Parser:
     def name() -> str:
         return __class__.__name__
 
-    def consume_if_token(self, token_type: TokenType) -> str | bool:
+    def consume_if_token(self, token_type: TokenType) -> str or bool:
         """
         Gets next token from lexer if the token types are the same.
 

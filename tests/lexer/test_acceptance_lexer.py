@@ -1,5 +1,6 @@
 from image_formatter.lexer.lexer import Lexer
 from image_formatter.lexer.token import TokenType
+
 from tests.test_helpers import get_all_tokens
 
 
