@@ -40,7 +40,7 @@ class Lexer:
         """
         self.fp = fp
         self.running = True
-        self.current_position = Position(1, 0)
+        self.current_position = Position(1, 1)
         self.max_int = max_int
         self.tag = tag
         self.special_signs = special_signs
@@ -66,8 +66,8 @@ class Lexer:
         If there are no more characters to read, the flag running is set to False -
         lexer finished all work.
         """
-        self.curr_char = self.fp.read(1)
         self._update_current_position()
+        self.curr_char = self.fp.read(1)
         if not self.curr_char:
             self.running = False
 
@@ -75,10 +75,11 @@ class Lexer:
         """
         Updates lexer position in the text / text stream.
         """
-        if self.curr_char in self.newline_characters:
-            self.current_position.move_to_next_line()
-        else:
-            self.current_position.move_right()
+        if self.curr_char:
+            if self.curr_char in self.newline_characters:
+                self.current_position.move_to_next_line()
+            else:
+                self.current_position.move_right()
 
     def build_char(self) -> Token | None:
         """
@@ -89,13 +90,24 @@ class Lexer:
             Appropriate token of type T_CHAR if completed successfully,
             None if the whitespace is encountered
         """
-        if self.curr_char.isspace():
-            self.next_char()
+        if self.is_current_char_white():
+            # self.next_char()
             return None
         char = self.curr_char
         position = deepcopy(self.current_position)
         self.next_char()
         return Token(TokenType.T_CHAR, position, char)
+
+    def build_white_char(self) -> Token | None:
+        if not self.is_current_char_white():
+            return None
+        char = self.curr_char
+        position = deepcopy(self.current_position)
+        self.next_char()
+        return Token(TokenType.T_WHITE_CHAR, position, char)
+
+    def is_current_char_white(self):
+        return self.curr_char.isspace() or self.curr_char in self.newline_characters
 
     def build_literal(self) -> Token | None:
         """
@@ -235,6 +247,7 @@ class Lexer:
                 or (token := self.build_url())
                 or (token := self.build_integer())
                 or (token := self.build_literal())
+                or (token := self.build_white_char())
             ):
                 log.info(f"{Lexer.name()}: Token {token.type} returned with content: '{token.string}'.")
                 return token

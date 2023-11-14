@@ -13,7 +13,8 @@ class TokenType(Enum):
     T_IMAGE_SIZE_TAG = 2
     T_CHAR = 3
     T_INTEGER = 4
-    T_EOF = 5
+    T_WHITE_CHAR = 5
+    T_EOF = 6
 
 
 class Token:
