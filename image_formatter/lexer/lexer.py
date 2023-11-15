@@ -43,7 +43,7 @@ class Lexer:
         self.max_int = max_int
         self.tag = tag
         self.special_signs = special_signs
-        self.newline_characters = newline_characters
+        self.newline_characters = newline_characters  # @TODO add hypothesis tests
 
     @staticmethod
     def name() -> str:
@@ -194,7 +194,7 @@ class Lexer:
             return None
         string += self.current_char
         self.next_char()
-        while self.is_character() or self.current_char in ["/", "."]:
+        while self.is_character() or self.current_char in ["/", "."]:  # @TODO add hypothesis tests
             string += self.current_char
             self.next_char()
         log.info(f"{Lexer.name()}: Url ending built successfully.")

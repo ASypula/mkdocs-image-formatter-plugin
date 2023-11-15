@@ -45,6 +45,7 @@ def test_given_image_links_mixed_with_other_tokens_then_image_links_returned():
 
 
 def test_given_one_image_link_mixed_with_other_tokens_then_image_link_returned():
+    # @TODO add hypothesis tests
     parser = setup_parser("   @small(some/url.png) & word @big *(next/longer.url.jpg)  word2")
     result = []
     for link in parser.parse():
