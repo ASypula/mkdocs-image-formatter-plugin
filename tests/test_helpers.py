@@ -1,9 +1,10 @@
 from image_formatter.lexer.lexer import Lexer
 from image_formatter.lexer.token import Token
 from image_formatter.parser.parser import Parser
+from typing import List, Union, Tuple
 
 
-def get_all_tokens(lexer: Lexer) -> list[Token]:
+def get_all_tokens(lexer: Lexer) -> List[Token]:
     """
     Collects all tokens available from the lexer's stream.
 
@@ -21,7 +22,7 @@ def get_all_tokens(lexer: Lexer) -> list[Token]:
     return tokens
 
 
-def get_all_parser_results(parser: Parser, lexer_iterations: int) -> list[(str, str) or None]:
+def get_all_parser_results(parser: Parser, lexer_iterations: int) -> List[Union[Tuple[str, str], None]]:
     """
     Collects all results returned by the function parse_image_link_tag.
     The parse function cannot be used in unit tests for parser as it uses the lexer.running attribute.
