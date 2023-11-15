@@ -60,18 +60,7 @@ class Lexer:
         """
         return self.curr_char.isalnum() or self.curr_char in self.special_signs
 
-    def next_char(self) -> None:
-        """
-        Takes next character from the stream.
-        If there are no more characters to read, the flag running is set to False -
-        lexer finished all work.
-        """
-        self._update_current_position()
-        self.curr_char = self.fp.read(1)
-        if not self.curr_char:
-            self.running = False
-
-    def _update_current_position(self) -> None:
+    def update_current_position(self) -> None:
         """
         Updates lexer position in the text / text stream.
         """
@@ -80,6 +69,17 @@ class Lexer:
                 self.current_position.move_to_next_line()
             else:
                 self.current_position.move_right()
+
+    def next_char(self) -> None:
+        """
+        Takes next character from the stream.
+        If there are no more characters to read, the flag running is set to False -
+        lexer finished all work.
+        """
+        self.update_current_position()
+        self.curr_char = self.fp.read(1)
+        if not self.curr_char:
+            self.running = False
 
     def build_char(self) -> Token or None:
         """
@@ -91,7 +91,6 @@ class Lexer:
             None if the whitespace is encountered
         """
         if self.is_current_char_white():
-            # self.next_char()
             return None
         char = self.curr_char
         position = deepcopy(self.current_position)
