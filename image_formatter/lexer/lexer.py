@@ -24,6 +24,7 @@ class Lexer:
         special_signs: tuple = ("-", "_"),
         tag: str = "@",
         newline_characters: tuple = ("\n", "\r"),
+        additional_path_signs: tuple = ("/", "."),
     ):
         """
         Args:
@@ -33,6 +34,7 @@ class Lexer:
             special_signs: defines which special signs can be used in strings
             tag: defines character that is used to find image tags
             newline_characters: defines which characters should be treated as newlines
+            additional_path_signs: defines which characters alongside letters could be used in url paths
 
         running: defines if lexer should still go through the characters or EOF was encountered
         """
@@ -44,6 +46,7 @@ class Lexer:
         self.tag = tag
         self.special_signs = special_signs
         self.newline_characters = newline_characters  # @TODO add hypothesis tests
+        self.additional_path_signs = additional_path_signs
 
     @staticmethod
     def name() -> str:
@@ -194,7 +197,7 @@ class Lexer:
             return None
         string += self.current_char
         self.next_char()
-        while self.is_character() or self.current_char in ["/", "."]:  # @TODO add hypothesis tests
+        while self.is_character() or self.current_char in self.additional_path_signs:  # @TODO add hypothesis tests
             string += self.current_char
             self.next_char()
         log.info(f"{Lexer.name()}: Url ending built successfully.")

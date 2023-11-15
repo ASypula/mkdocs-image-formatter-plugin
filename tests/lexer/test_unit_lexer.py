@@ -15,6 +15,7 @@ def test_given_only_positional_arguments_then_attributes_corresponding_to_kwargs
     assert lexer.special_signs == ("-", "_")
     assert lexer.tag == "@"
     assert lexer.newline_characters == ("\n", "\r")
+    assert lexer.additional_path_signs == ("/", ".")
 
 
 @pytest.mark.parametrize(
