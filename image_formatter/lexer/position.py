@@ -3,7 +3,7 @@ class Position:
     Class position represents cursor position in text / text stream.
     """
 
-    def __init__(self, line: int = 1, column: int = 0):
+    def __init__(self, line: int = 1, column: int = 1):
         """
         Args:
             line: line number in analyzed text / text stream
@@ -17,7 +17,7 @@ class Position:
         Updates position to represent the position before the first character in next line of the text.
         """
         self.line += 1
-        self.column = 0
+        self.column = 1
 
     def move_right(self) -> None:
         """

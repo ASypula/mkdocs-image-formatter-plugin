@@ -16,8 +16,6 @@ class Lexer:
     - omitting unimportant parts
     """
 
-    curr_char = ""
-
     def __init__(
         self,
         fp: io.TextIOWrapper,
@@ -26,6 +24,7 @@ class Lexer:
         special_signs: tuple = ("-", "_"),
         tag: str = "@",
         newline_characters: tuple = ("\n", "\r"),
+        additional_path_signs: tuple = ("/", "."),
     ):
         """
         Args:
@@ -35,16 +34,19 @@ class Lexer:
             special_signs: defines which special signs can be used in strings
             tag: defines character that is used to find image tags
             newline_characters: defines which characters should be treated as newlines
+            additional_path_signs: defines which characters alongside letters could be used in url paths
 
         running: defines if lexer should still go through the characters or EOF was encountered
         """
         self.fp = fp
         self.running = True
-        self.current_position = Position(1, 0)
+        self.current_char = ""
+        self.current_position = Position(1, 1)
         self.max_int = max_int
         self.tag = tag
         self.special_signs = special_signs
-        self.newline_characters = newline_characters
+        self.newline_characters = newline_characters  # @TODO add hypothesis tests
+        self.additional_path_signs = additional_path_signs
 
     @staticmethod
     def name() -> str:
@@ -58,7 +60,17 @@ class Lexer:
             True if the string is alphanumeric or among the valid special signs
             False otherwise
         """
-        return self.curr_char.isalnum() or self.curr_char in self.special_signs
+        return self.current_char.isalnum() or self.current_char in self.special_signs
+
+    def update_current_position(self) -> None:
+        """
+        Updates lexer position in the text / text stream.
+        """
+        if self.current_char:
+            if self.current_char in self.newline_characters:
+                self.current_position.move_to_next_line()
+            else:
+                self.current_position.move_right()
 
     def next_char(self) -> None:
         """
@@ -66,19 +78,10 @@ class Lexer:
         If there are no more characters to read, the flag running is set to False -
         lexer finished all work.
         """
-        self.curr_char = self.fp.read(1)
-        self._update_current_position()
-        if not self.curr_char:
+        self.update_current_position()
+        self.current_char = self.fp.read(1)
+        if not self.current_char:
             self.running = False
-
-    def _update_current_position(self) -> None:
-        """
-        Updates lexer position in the text / text stream.
-        """
-        if self.curr_char in self.newline_characters:
-            self.current_position.move_to_next_line()
-        else:
-            self.current_position.move_right()
 
     def build_char(self) -> Token or None:
         """
@@ -89,13 +92,23 @@ class Lexer:
             Appropriate token of type T_CHAR if completed successfully,
             None if the whitespace is encountered
         """
-        if self.curr_char.isspace():
-            self.next_char()
+        if self.is_current_char_white():
             return None
-        char = self.curr_char
+        char = self.current_char
         position = deepcopy(self.current_position)
         self.next_char()
         return Token(TokenType.T_CHAR, position, char)
+
+    def build_white_char(self) -> Token | None:
+        if not self.is_current_char_white():
+            return None
+        char = self.current_char
+        position = deepcopy(self.current_position)
+        self.next_char()
+        return Token(TokenType.T_WHITE_CHAR, position, char)
+
+    def is_current_char_white(self):
+        return self.current_char.isspace() or self.current_char in self.newline_characters
 
     def build_literal(self) -> Token or None:
         """
@@ -106,13 +119,13 @@ class Lexer:
             Appropriate token of type T_LITERAL if completed successfully,
             Otherwise the return from build_char
         """
-        if not self.curr_char.isalpha():
+        if not self.current_char.isalpha():
             return self.build_char()
-        literal = self.curr_char
+        literal = self.current_char
         position = deepcopy(self.current_position)
         self.next_char()
         while self.is_character():
-            literal += self.curr_char
+            literal += self.current_char
             self.next_char()
         return Token(TokenType.T_LITERAL, position, literal)
 
@@ -129,21 +142,21 @@ class Lexer:
             Otherwise the returns None
         """
         log.info(f"{Lexer.name()}: Trying to build an integer.")
-        if not self.curr_char.isdigit():
+        if not self.current_char.isdigit():
             log.info(f"{Lexer.name()}: Failed to build an integer. No digit provided.")
             return None
-        number = int(self.curr_char)
+        number = int(self.current_char)
         position = deepcopy(self.current_position)
         self.next_char()
         if number != 0:
-            while self.curr_char.isdigit() and self._is_number_in_range(number):
-                number = number * 10 + int(self.curr_char)
+            while self.current_char.isdigit() and self._is_number_in_range(number):
+                number = number * 10 + int(self.current_char)
                 self.next_char()
         log.info(f"{Lexer.name()}: Integer built successfully. Returning 'T_INTEGER' token.")
         return IntegerToken(TokenType.T_INTEGER, position, number)
 
     def _is_number_in_range(self, number):
-        return number * 10 + int(self.curr_char) <= self.max_int
+        return number * 10 + int(self.current_char) <= self.max_int
 
     def build_tag(self) -> Token or None:
         """
@@ -155,7 +168,7 @@ class Lexer:
             None if the tag cannot be built
         """
         log.info("Trying to build a tag.")
-        if not self.curr_char == self.tag:
+        if not self.current_char == self.tag:
             log.info(f"{Lexer.name()}: Failed to build a tag. Missing '{self.tag}'.")
             return None
         position = deepcopy(self.current_position)
@@ -179,13 +192,13 @@ class Lexer:
             None: in case url cannot be built
         """
         log.info(f"{Lexer.name()}: Trying to build a url ending.")
-        if self.curr_char != ".":
+        if self.current_char != ".":
             log.info(f"{Lexer.name()}: Failed to build a url ending. Missing '.'.)")
             return None
-        string += self.curr_char
+        string += self.current_char
         self.next_char()
-        while self.is_character() or self.curr_char in ["/", "."]:
-            string += self.curr_char
+        while self.is_character() or self.current_char in self.additional_path_signs:  # @TODO add hypothesis tests
+            string += self.current_char
             self.next_char()
         log.info(f"{Lexer.name()}: Url ending built successfully.")
         return string
@@ -200,19 +213,19 @@ class Lexer:
             None if the url cannot be built
         """
         log.info(f"{Lexer.name()}: Trying to build a url.")
-        if not self.curr_char == "(":
+        if not self.current_char == "(":
             log.info(f"{Lexer.name()}: Failed to build a url. Missing '('.)")
             return None
         position = deepcopy(self.current_position)
         self.next_char()
         string = ""
-        while self.is_character() or self.curr_char == "/":
-            string += self.curr_char
+        while self.is_character() or self.current_char == "/":
+            string += self.current_char
             self.next_char()
         if not (string := self.get_url_ending(string)):
             log.info(f"{Lexer.name()}: Failed to build a url. Missing url ending.)")
             return None
-        if not self.curr_char == ")":
+        if not self.current_char == ")":
             log.info(f"{Lexer.name()}: Failed to build a url. Missing ')'.)")
             return None
         self.next_char()
@@ -235,6 +248,7 @@ class Lexer:
                 or (token := self.build_url())
                 or (token := self.build_integer())
                 or (token := self.build_literal())
+                or (token := self.build_white_char())
             ):
                 log.info(f"{Lexer.name()}: Token {token.type} returned with content: '{token.string}'.")
                 return token
