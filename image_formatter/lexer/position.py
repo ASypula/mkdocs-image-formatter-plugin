@@ -7,7 +7,7 @@ class Position:
         """
         Args:
             line: line number in analyzed text / text stream
-            column: column number in analyzed text / text_stream
+            column: column number in analyzed text / text stream
         """
         self.line = line
         self.column = column

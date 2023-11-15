@@ -169,7 +169,7 @@ class Lexer:
 
     def get_url_ending(self, string: str) -> str | None:
         """
-        Gets the remaining part of url after the first dot (dot is required at least once in an url)
+        Gets the remaining part of url after the first dot (dot is required at least once in a url)
 
         Args:
             string: first part of to-be url
@@ -178,9 +178,9 @@ class Lexer:
             string: complete url
             None: in case url cannot be built
         """
-        log.info(f"{Lexer.name()}: Trying to build an url ending.")
+        log.info(f"{Lexer.name()}: Trying to build a url ending.")
         if self.curr_char != ".":
-            log.info(f"{Lexer.name()}: Failed to build an url ending. Missing '.'.)")
+            log.info(f"{Lexer.name()}: Failed to build a url ending. Missing '.'.)")
             return None
         string += self.curr_char
         self.next_char()
@@ -192,16 +192,16 @@ class Lexer:
 
     def build_url(self) -> Token | None:
         """
-        Tries to build an url token according to:
+        Tries to build a url token according to:
         image_url = '(', { '/' | '.' | literal}, '.', literal, ')'
 
         Returns:
             Appropriate token of type T_IMAGE_URL if completed successfully,
             None if the url cannot be built
         """
-        log.info(f"{Lexer.name()}: Trying to build an url.")
+        log.info(f"{Lexer.name()}: Trying to build a url.")
         if not self.curr_char == "(":
-            log.info(f"{Lexer.name()}: Failed to build an url. Missing '('.)")
+            log.info(f"{Lexer.name()}: Failed to build a url. Missing '('.)")
             return None
         position = deepcopy(self.current_position)
         self.next_char()
@@ -210,10 +210,10 @@ class Lexer:
             string += self.curr_char
             self.next_char()
         if not (string := self.get_url_ending(string)):
-            log.info(f"{Lexer.name()}: Failed to build an url. Missing url ending.)")
+            log.info(f"{Lexer.name()}: Failed to build a url. Missing url ending.)")
             return None
         if not self.curr_char == ")":
-            log.info(f"{Lexer.name()}: Failed to build an url. Missing ')'.)")
+            log.info(f"{Lexer.name()}: Failed to build a url. Missing ')'.)")
             return None
         self.next_char()
         log.info(f"{Lexer.name()}: Image url built successfully. Returning 'T_IMAGE_URL' token.")
