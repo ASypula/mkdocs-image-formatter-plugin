@@ -1,4 +1,4 @@
-# Image-formatter: MkDocs plugin for easier management of image sizes
+# Image-size: MkDocs plugin for easier management of image sizes
 
 #### This plugin is being developed as part of Advanced Programming in Python course (23L edition)
 
