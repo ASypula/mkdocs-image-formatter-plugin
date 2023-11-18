@@ -4,6 +4,7 @@ import io
 import sys
 from mkdocs.plugins import get_plugin_logger
 from copy import deepcopy
+from typing import Tuple
 
 log = get_plugin_logger(__name__)
 
@@ -21,10 +22,10 @@ class Lexer:
         fp: io.TextIOWrapper,
         *,
         max_int: int = sys.maxsize,
-        special_signs: tuple = ("-", "_"),
+        special_signs: Tuple[str, str] = ("-", "_"),
         tag: str = "@",
-        newline_characters: tuple = ("\n", "\r"),
-        additional_path_signs: tuple = ("/", "."),
+        newline_characters: Tuple[str, str] = ("\n", "\r"),
+        additional_path_signs: Tuple[str, str] = ("/", "."),
     ):
         """
         Args:
