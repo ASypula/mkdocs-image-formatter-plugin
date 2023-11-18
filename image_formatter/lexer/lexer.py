@@ -29,14 +29,16 @@ class Lexer:
         """
         Args:
             fp: file pointer to open file for reading
-        Kwargs:
+
+        Keyword Args:
             max_int: defines integer maximal value that the lexer can build
             special_signs: defines which special signs can be used in strings
             tag: defines character that is used to find image tags
             newline_characters: defines which characters should be treated as newlines
             additional_path_signs: defines which characters alongside letters could be used in url paths
 
-        running: defines if lexer should still go through the characters or EOF was encountered
+        Attributes:
+            running: defines if lexer should still go through the characters or EOF was encountered
         """
         self.fp = fp
         self.running = True
@@ -99,7 +101,7 @@ class Lexer:
         self.next_char()
         return Token(TokenType.T_CHAR, position, char)
 
-    def build_white_char(self) -> Token | None:
+    def build_white_char(self) -> Token or None:
         if not self.is_current_char_white():
             return None
         char = self.current_char
@@ -113,7 +115,9 @@ class Lexer:
     def build_literal(self) -> Token or None:
         """
         Tries to build a literal token according to:
+        ```
         literal = letter, { letter | literal_special_sign | digit }
+        ```
 
         Returns:
             Appropriate token of type T_LITERAL if completed successfully,
@@ -132,10 +136,12 @@ class Lexer:
     def build_integer(self) -> IntegerToken or None:
         """
         Tries to build an integer token according to:
+        ```
         integer         = zero_digit | (non_zero_digit, { digit })
         digit           = zero_digit | non_zero_digit
         non_zero_digit  = 1..9
         zero_digit      = 0
+        ```
 
         Returns:
             Appropriate token of type T_INTEGER if completed successfully,
@@ -161,7 +167,9 @@ class Lexer:
     def build_tag(self) -> Token or None:
         """
         Tries to build an image tag token according to:
+        ```
         image_size_tag = '@', literal
+        ```
 
         Returns:
             Appropriate token of type T_IMAGE_SIZE_TAG if completed successfully,
@@ -206,7 +214,9 @@ class Lexer:
     def build_url(self) -> Token or None:
         """
         Tries to build a url token according to:
+        ```
         image_url = '(', { '/' | '.' | literal}, '.', literal, ')'
+        ```
 
         Returns:
             Appropriate token of type T_IMAGE_URL if completed successfully,
