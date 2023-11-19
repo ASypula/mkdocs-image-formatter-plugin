@@ -17,6 +17,9 @@ MarkupSafe==2.1.3
 mccabe==0.7.0
 mergedeep==1.3.4
 mkdocs==1.5.3
+mkdocs-material==9.4.9
+mkdocstrings==0.24.0
+mkdocstrings-python==1.7.4
 mock==5.1.0
 mypy-extensions==1.0.0
 packaging==23.2

@@ -51,7 +51,9 @@ class Parser:
     def parse_image_link_url(self, tag: str) -> (str, str) or bool:
         """
         Verify if image url can be created according to the:
+        ```
         image_link = image_size_tag, image_url
+        ```
 
         Args:
             tag: already found tag
@@ -84,7 +86,8 @@ class Parser:
 
     def parse(self):
         """
-        TODO
+        Todo:
+            change implementation according to interpreter needs
         """
         while self.lexer.running:
             if image_link_tag := self.parse_image_link_tag():

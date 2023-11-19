@@ -1,0 +1,13 @@
+site_name: Image formatter plugin for MkDocs
+
+theme:
+  name: "material"
+
+plugins:
+  - mkdocstrings
+
+nav:
+  - Home: index.md
+  - Plugin: plugin.md
+  - Lexer: lexer.md
+  - Parser: parser.md
