@@ -14,7 +14,8 @@ class TokenType(Enum):
     T_CHAR = 3
     T_INTEGER = 4
     T_WHITE_CHAR = 5
-    T_EOF = 6
+    T_IMAGE_URL_WITH_PROPERTIES = 6
+    T_EOF = 7
 
 
 class Token:
@@ -32,6 +33,12 @@ class Token:
         self.type = type
         self.position = position
         self.string = string
+
+    def __eq__(self, other):
+        if other.__class__ != self.__class__:
+            return False
+
+        return (self.position == other.position) and (self.string == other.string)
 
 
 class IntegerToken(Token):
