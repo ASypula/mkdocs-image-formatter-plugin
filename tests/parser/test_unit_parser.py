@@ -34,7 +34,7 @@ def test_given_only_image_links_then_only_image_links_returned():
     assert result[1] == ("medium", "medium-url.png")
 
 
-def test_given_image_links_separated_by_Nones_then_only_image_links_returned():
+def test_given_image_links_separated_by_nones_then_only_image_links_returned():
     mock_lexer = Mock()
     mock_lexer.get_token.side_effect = [
         Token(TokenType.T_IMAGE_SIZE_TAG, Position(1, 1), "small"),
@@ -52,7 +52,7 @@ def test_given_image_links_separated_by_Nones_then_only_image_links_returned():
     assert result[1] == ("medium", "medium-url.png")
 
 
-def test_given_tag_and_url_separated_by_char_then_only_False_returned():
+def test_given_tag_and_url_separated_by_char_then_only_false_returned():
     mock_lexer = Mock()
     mock_lexer.get_token.side_effect = [
         Token(TokenType.T_IMAGE_SIZE_TAG, Position(1, 1), "small"),
@@ -66,7 +66,7 @@ def test_given_tag_and_url_separated_by_char_then_only_False_returned():
     assert all(value is False for value in result)
 
 
-def test_given_no_tags_or_urls_then_only_False_returned():
+def test_given_no_tags_or_urls_then_only_false_returned():
     mock_lexer = Mock()
     mock_lexer.get_token.side_effect = [
         Token(TokenType.T_CHAR, Position(1, 1), "*"),
@@ -81,7 +81,7 @@ def test_given_no_tags_or_urls_then_only_False_returned():
     assert all(value is False for value in result)
 
 
-def test_given_url_and_tag_token_in_reverted_order_then_only_False_returned():
+def test_given_url_and_tag_token_in_reverted_order_then_only_false_returned():
     mock_lexer = Mock()
     mock_lexer.get_token.side_effect = [
         Token(TokenType.T_IMAGE_URL, Position(1, 1), "some/url.png"),
