@@ -29,29 +29,10 @@ class Parser:
     def name() -> str:
         return __class__.__name__
 
-    def consume_if_token(self, token_type: TokenType) -> Token or bool:
-        """
-        Gets next token from lexer if the token types are the same.
-
-        Args:
-            token_type: type of the token to be compared
-
-        Returns:
-            str: string from the token if the types are matching
-            False: if the token types are different
-        """
-        log.info(f"{Parser.name()}: Looking for '{token_type}'.")
-        while not self.curr_token:
-            self.curr_token = self.lexer.get_token()
-        if self.curr_token.type != token_type:
-            log.info(f"{Parser.name()}: Comparison failed, found '{self.curr_token.type}' and not '{token_type}'.")
-            return False
-        token = copy.deepcopy(self.curr_token)
+    def next_token(self):
         self.curr_token = self.lexer.get_token()
-        log.info(f"{Parser.name()}: Token '{token_type}' found with content: '{token.string}'.")
-        return token
 
-    def parse_image_link_url(self, tag_token: Token) -> Token or bool:
+    def parse_image_link_url(self, tag_token: Token) -> Token:
         """
         Verify if image url can be created according to the:
         ```
@@ -66,18 +47,26 @@ class Parser:
             False: if image link cannot be created
         """
         log.info(f"{Parser.name()}: Trying to parse image link url.")
-        if url_token := self.consume_if_token(TokenType.T_IMAGE_URL):
-            properties = '{: style="'
-            for key, value in self.image_tags_properties[tag_token.string].items():
-                properties += f"{key}:{value};"
-            properties = properties[:-1] + '"}'
-            formatted_url = url_token.string + properties
+        if self.curr_token.type == TokenType.T_IMAGE_URL:
+            url_token = copy.deepcopy(self.curr_token)
+            formatted_url = self.add_tag_properties_to_url(tag_token)
+            self.next_token()
             return Token(TokenType.T_IMAGE_URL_WITH_PROPERTIES, url_token.position, formatted_url)
-        log.info(f"{Parser.name()}: Failed to parse image link url.")
-        self.error_handler.handle(UnexpectedTagException(TokenType.T_IMAGE_URL, self.curr_token.type))
-        return False
+        else:
+            log.info(f"{Parser.name()}: Failed to parse image link url.")
+            self.error_handler.handle(UnexpectedTagException(TokenType.T_IMAGE_URL, self.curr_token.type))
+            return tag_token
 
-    def parse_image_link_tag(self) -> (str, str) or bool:
+    def add_tag_properties_to_url(self, tag_token):
+        properties = '{: style="'
+        for key, value in self.image_tags_properties[tag_token.string].items():
+            properties += f"{key}:{value};"
+        properties = properties[:-1] if properties[-1] == ";" else properties
+        properties = properties + '"}'
+        formatted_url = self.curr_token.string + properties
+        return formatted_url
+
+    def parse_image_link_tag(self) -> Token or bool:
         """
         Tries to parse the first part of image link - the tag.
         image_link = image_size_tag, image_url
@@ -87,19 +76,21 @@ class Parser:
             False: if image link tag cannot be created
         """
         log.info(f"{Parser.name()}: Trying to parse image link tag.")
-        if tag_token := self.consume_if_token(TokenType.T_IMAGE_SIZE_TAG):
+        if self.curr_token.type == TokenType.T_IMAGE_SIZE_TAG:
+            tag_token = copy.deepcopy(self.curr_token)
+            self.next_token()
             return self.parse_image_link_url(tag_token)
         log.info(f"{Parser.name()}: Failed to parse image link tag.")
         return False
 
     def parse(self):
         """
-        Todo:
-            change implementation according to interpreter needs
+        Replaces image size tags with properties after the url
         """
-        while self.lexer.running:
+        while self.curr_token.type != TokenType.T_EOF:
             if image_link_token := self.parse_image_link_tag():
                 log.info(f"{Parser.name()}: Returning image link token with properties: '{image_link_token.string}'.")
                 yield image_link_token
             else:
-                self.curr_token = self.lexer.get_token()
+                yield self.curr_token
+                self.next_token()
