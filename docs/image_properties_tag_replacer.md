@@ -1,3 +1,3 @@
-# Parser
+# ImagePropertiesTagReplacer
 
-::: image_formatter.parser.parser
+::: image_formatter.image_properties_tag_replacer.image_properties_tag_replacer

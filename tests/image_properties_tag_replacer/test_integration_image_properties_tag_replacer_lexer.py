@@ -6,7 +6,7 @@ import io
 import pytest
 
 
-def setup_parser(request):
+def setup_tags_replacer(request):
     fp = io.StringIO(request)
     lexer = Lexer(fp)
     lexer.next_char()
@@ -14,12 +14,12 @@ def setup_parser(request):
         "small": {"height": "100px", "width": "100px"},
         "big": {"height": "200px", "width": "200px"},
     }
-    parser = ImagePropertiesTagReplacer(lexer, image_tags_properties)
-    return parser
+    tags_replacer = ImagePropertiesTagReplacer(lexer, image_tags_properties)
+    return tags_replacer
 
 
 def test_given_no_image_links_then_nothing_is_replaced():
-    parser = setup_parser("word1, word2 $$ @tag1-tag \n\n @tag2 x (start-of/url.png)")
+    tags_replacer = setup_tags_replacer("word1, word2 $$ @tag1-tag \n\n @tag2 x (start-of/url.png)")
     result = []
     expected_tokens = [
         Token(TokenType.T_LITERAL, Position(1, 1), "word1"),
@@ -42,15 +42,15 @@ def test_given_no_image_links_then_nothing_is_replaced():
         Token(TokenType.T_IMAGE_URL, Position(3, 10), "(start-of/url.png)"),
     ]
 
-    for link in parser.replace_image_properties_tags():
+    for link in tags_replacer.replace_image_properties_tags():
         result.append(link)
     assert result == expected_tokens
 
 
 def test_given_no_input_then_nothing_is_returned():
-    parser = setup_parser("")
+    tags_replacer = setup_tags_replacer("")
     result = []
-    for link in parser.replace_image_properties_tags():
+    for link in tags_replacer.replace_image_properties_tags():
         result.append(link)
     assert result == []
 
@@ -85,10 +85,10 @@ def test_given_no_input_then_nothing_is_returned():
     ],
 )
 def test_given_sequence_of_tokens_with_one_valid_image_tag_then_one_image_tag_is_replaced(text, expected_tokens):
-    parser = setup_parser(text)
+    tags_replacer = setup_tags_replacer(text)
     result = []
 
-    for link in parser.replace_image_properties_tags():
+    for link in tags_replacer.replace_image_properties_tags():
         result.append(link)
     assert result == expected_tokens
 
@@ -150,9 +150,9 @@ def test_given_sequence_of_tokens_with_one_valid_image_tag_then_one_image_tag_is
     ],
 )
 def test_given_image_links_mixed_with_other_tokens_then_image_links_returned(text, expected_tokens):
-    parser = setup_parser(text)
+    tags_replacer = setup_tags_replacer(text)
     result = []
 
-    for link in parser.replace_image_properties_tags():
+    for link in tags_replacer.replace_image_properties_tags():
         result.append(link)
     assert result == expected_tokens
