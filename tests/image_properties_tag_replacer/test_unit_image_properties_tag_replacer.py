@@ -1,5 +1,5 @@
 from unittest.mock import Mock
-from image_formatter.parser.parser import Parser
+from image_formatter.image_properties_tag_replacer.image_properties_tag_replacer import ImagePropertiesTagReplacer
 from image_formatter.lexer.token import TokenType, Token
 from image_formatter.lexer.position import Position
 from tests.test_helpers import get_all_parser_results
@@ -18,7 +18,7 @@ def test_given_only_one_image_link_then_one_image_link_returned():
         Token(TokenType.T_IMAGE_URL, Position(2, 1), "(some/url.png)"),
         "",
     ]
-    parser = Parser(mock_lexer, image_tags_properties)
+    parser = ImagePropertiesTagReplacer(mock_lexer, image_tags_properties)
     result = get_all_parser_results(parser, 1)
     assert len(result) == 1
     assert result[0] == Token(
@@ -45,7 +45,7 @@ def test_given_only_image_links_then_only_image_links_returned():
             '(medium-url.png){: style="height:150px;width:150px"}',
         ),
     ]
-    parser = Parser(mock_lexer, image_tags_properties)
+    parser = ImagePropertiesTagReplacer(mock_lexer, image_tags_properties)
     result = get_all_parser_results(parser, 2)
     assert len(result) == 2
     assert result == expected_tokens
@@ -64,7 +64,7 @@ def test_given_tag_and_url_separated_by_char_then_only_false_returned():
         Token(TokenType.T_CHAR, Position(2, 1), "*"),
         Token(TokenType.T_IMAGE_URL, Position(3, 1), "(some/url.png)"),
     ]
-    parser = Parser(mock_lexer, image_tags_properties)
+    parser = ImagePropertiesTagReplacer(mock_lexer, image_tags_properties)
     result = []
 
     for link in parser.parse():
@@ -85,7 +85,7 @@ def test_given_no_tags_or_urls_then_only_false_returned():
         Token(TokenType.T_CHAR, Position(2, 1), "*"),
         Token(TokenType.T_LITERAL, Position(3, 1), "hello"),
     ]
-    parser = Parser(mock_lexer, image_tags_properties)
+    parser = ImagePropertiesTagReplacer(mock_lexer, image_tags_properties)
     result = []
 
     for link in parser.parse():
@@ -100,7 +100,7 @@ def test_given_url_and_tag_token_in_reverted_order_then_only_false_returned():
         Token(TokenType.T_IMAGE_SIZE_TAG, Position(2, 1), "medium"),
         "",
     ]
-    parser = Parser(mock_lexer, image_tags_properties)
+    parser = ImagePropertiesTagReplacer(mock_lexer, image_tags_properties)
     result = get_all_parser_results(parser, 2)
     assert len(result) == 2
     assert all(value is False for value in result)

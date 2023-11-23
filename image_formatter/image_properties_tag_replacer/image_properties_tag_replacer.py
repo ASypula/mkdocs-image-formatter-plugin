@@ -9,9 +9,9 @@ from mkdocs.plugins import get_plugin_logger
 log = get_plugin_logger(__name__)
 
 
-class Parser:
+class ImagePropertiesTagReplacer:
     """
-    Class parser responsible for parsing the code.
+    Class ImagePropertiesTagReplacer responsible for replacing image size tags with properties after the image URL.
     Focuses only on the plugin's purpose - images with added size tags
     """
 
@@ -48,15 +48,15 @@ class Parser:
             tuple(str, str): if successful, tag and url
             False: if image link cannot be created
         """
-        log.info(f"{Parser.name()}: Trying to parse image link url.")
+        log.info(f"{ImagePropertiesTagReplacer.name()}: Trying to parse image link url.")
         if self.curr_token.type == TokenType.T_IMAGE_URL:
-            log.info(f"{Parser.name()}: Url tag found: {self.curr_token}")
+            log.info(f"{ImagePropertiesTagReplacer.name()}: Url tag found: {self.curr_token}")
             url_token = copy.deepcopy(self.curr_token)
             formatted_url = self.add_tag_properties_to_url(tag_token)
             self.next_token()
             return Token(TokenType.T_IMAGE_URL_WITH_PROPERTIES, url_token.position, formatted_url)
         else:
-            log.info(f"{Parser.name()}: Failed to parse image link url.")
+            log.info(f"{ImagePropertiesTagReplacer.name()}: Failed to parse image link url.")
             self.error_handler.handle(UnexpectedTagException(TokenType.T_IMAGE_URL, self.curr_token.type))
             return tag_token
 
@@ -82,13 +82,13 @@ class Parser:
             tuple(str, str): if successful from the parse_image_link_url
             False: if image link tag cannot be created
         """
-        log.info(f"{Parser.name()}: Trying to parse image link tag.")
+        log.info(f"{ImagePropertiesTagReplacer.name()}: Trying to parse image link tag.")
         if self.curr_token.type == TokenType.T_IMAGE_SIZE_TAG:
-            log.info(f"{Parser.name()}: Image size tag found: {self.curr_token}")
+            log.info(f"{ImagePropertiesTagReplacer.name()}: Image size tag found: {self.curr_token}")
             tag_token = copy.deepcopy(self.curr_token)
             self.next_token()
             return self.parse_image_link_url(tag_token)
-        log.info(f"{Parser.name()}: Failed to parse image link tag.")
+        log.info(f"{ImagePropertiesTagReplacer.name()}: Failed to parse image link tag.")
         return False
 
     def parse(self):
@@ -97,7 +97,9 @@ class Parser:
         """
         while self.curr_token.type != TokenType.T_EOF:
             if image_link_token := self.parse_image_link_tag():
-                log.info(f"{Parser.name()}: Returning image link token with properties: '{image_link_token.string}'.")
+                log.info(
+                    f"{ImagePropertiesTagReplacer.name()}: Returning image link token with properties: '{image_link_token.string}'."
+                )
                 yield image_link_token
             else:
                 yield self.curr_token

@@ -1,6 +1,6 @@
 from image_formatter.lexer.lexer import Lexer
 from image_formatter.lexer.token import Token
-from image_formatter.parser.parser import Parser
+from image_formatter.image_properties_tag_replacer.image_properties_tag_replacer import ImagePropertiesTagReplacer
 from typing import List, Union, Tuple
 
 
@@ -22,10 +22,12 @@ def get_all_tokens(lexer: Lexer) -> List[Token]:
     return tokens
 
 
-def get_all_parser_results(parser: Parser, lexer_iterations: int) -> List[Union[Tuple[str, str], None]]:
+def get_all_parser_results(
+    parser: ImagePropertiesTagReplacer, lexer_iterations: int
+) -> List[Union[Tuple[str, str], None]]:
     """
     Collects all results returned by the function parse_image_link_tag.
-    The parse function cannot be used in unit tests for parser as it uses the lexer.running attribute.
+    The parse function cannot be used in unit tests for ImagePropertiesTagReplacer as it uses the lexer.running attribute.
 
     Args:
         parser: Parser to use

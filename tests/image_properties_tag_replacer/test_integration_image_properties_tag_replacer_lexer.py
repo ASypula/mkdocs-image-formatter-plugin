@@ -1,7 +1,7 @@
 from image_formatter.lexer.lexer import Lexer
 from image_formatter.lexer.token import Token, TokenType
 from image_formatter.lexer.position import Position
-from image_formatter.parser.parser import Parser
+from image_formatter.image_properties_tag_replacer.image_properties_tag_replacer import ImagePropertiesTagReplacer
 import io
 import pytest
 
@@ -14,7 +14,7 @@ def setup_parser(request):
         "small": {"height": "100px", "width": "100px"},
         "big": {"height": "200px", "width": "200px"},
     }
-    parser = Parser(lexer, image_tags_properties)
+    parser = ImagePropertiesTagReplacer(lexer, image_tags_properties)
     return parser
 
 

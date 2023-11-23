@@ -1,5 +1,5 @@
 from unittest.mock import Mock
-from image_formatter.parser.parser import Parser
+from image_formatter.image_properties_tag_replacer.image_properties_tag_replacer import ImagePropertiesTagReplacer
 from image_formatter.lexer.token import Token, TokenType
 from image_formatter.error_handler.error_handler import ErrorHandler
 from image_formatter.error_handler.errors import UnexpectedTagException
@@ -21,7 +21,7 @@ def test_given_tag_when_not_followed_by_url_then_exception_is_registered():
         "",
     ]
     error_handler = ErrorHandler()
-    parser = Parser(mock_lexer, image_tags_properties, error_handler)
+    parser = ImagePropertiesTagReplacer(mock_lexer, image_tags_properties, error_handler)
     get_all_parser_results(parser, 1)
     assert len(error_handler.errors) == 1
     assert error_handler.errors == [UnexpectedTagException(TokenType.T_IMAGE_URL, TokenType.T_CHAR)]
@@ -36,7 +36,7 @@ def test_given_tag_when_followed_by_another_tag_with_url_then_exception_is_regis
         "",
     ]
     error_handler = ErrorHandler()
-    parser = Parser(mock_lexer, image_tags_properties, error_handler)
+    parser = ImagePropertiesTagReplacer(mock_lexer, image_tags_properties, error_handler)
     expected_tokens = [
         Token(TokenType.T_IMAGE_SIZE_TAG, Position(1, 1), "small"),
         Token(

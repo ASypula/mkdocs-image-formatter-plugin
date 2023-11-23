@@ -1,5 +1,5 @@
 from image_formatter.lexer.lexer import Lexer
-from image_formatter.parser.parser import Parser
+from image_formatter.image_properties_tag_replacer.image_properties_tag_replacer import ImagePropertiesTagReplacer
 
 if __name__ == "__main__":
     # filename = "tests/lexer/test_files/test1.txt"
@@ -8,5 +8,5 @@ if __name__ == "__main__":
         print(type(fp))
         lexer = Lexer(fp)
         lexer.next_char()
-        parser = Parser(lexer)
+        parser = ImagePropertiesTagReplacer(lexer)
         parser.parse()
