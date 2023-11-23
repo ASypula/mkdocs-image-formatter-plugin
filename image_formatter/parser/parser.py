@@ -19,6 +19,8 @@ class Parser:
         """
         Args:
             lex: lexer used for obtaining tokens
+            image_tags_properties: properties to be added after tagged urls
+            error_handler: used to register errors, takes care of error handling
         """
         self.lexer = lex
         self.curr_token = lex.get_token()
@@ -48,6 +50,7 @@ class Parser:
         """
         log.info(f"{Parser.name()}: Trying to parse image link url.")
         if self.curr_token.type == TokenType.T_IMAGE_URL:
+            log.info(f"{Parser.name()}: Url tag found: {self.curr_token}")
             url_token = copy.deepcopy(self.curr_token)
             formatted_url = self.add_tag_properties_to_url(tag_token)
             self.next_token()
@@ -77,6 +80,7 @@ class Parser:
         """
         log.info(f"{Parser.name()}: Trying to parse image link tag.")
         if self.curr_token.type == TokenType.T_IMAGE_SIZE_TAG:
+            log.info(f"{Parser.name()}: Image size tag found: {self.curr_token}")
             tag_token = copy.deepcopy(self.curr_token)
             self.next_token()
             return self.parse_image_link_url(tag_token)
