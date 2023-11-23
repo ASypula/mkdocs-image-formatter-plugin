@@ -60,12 +60,16 @@ class Parser:
             self.error_handler.handle(UnexpectedTagException(TokenType.T_IMAGE_URL, self.curr_token.type))
             return tag_token
 
-    def add_tag_properties_to_url(self, tag_token):
+    def add_tag_properties_to_url(self, tag_token: Token) -> str:
+        """
+        Formats properties for given tag_token to string in a  CSS format.
+
+        Args:
+            tag_token: token used to mark a url
+        """
         properties = '{: style="'
-        for key, value in self.image_tags_properties[tag_token.string].items():
-            properties += f"{key}:{value};"
-        properties = properties[:-1] if properties[-1] == ";" else properties
-        properties = properties + '"}'
+        pairs = ";".join([f"{key}:{value}" for key, value in self.image_tags_properties[tag_token.string].items()])
+        properties = properties + pairs + '"}'
         formatted_url = self.curr_token.string + properties
         return formatted_url
 
