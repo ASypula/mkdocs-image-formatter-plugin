@@ -22,9 +22,9 @@ class Parser:
         self.curr_token = lex.get_token()
         self.error_handler = error_handler
 
-    @staticmethod
-    def name() -> str:
-        return __class__.__name__
+    @classmethod
+    def name(cls) -> str:
+        return cls.__name__
 
     def consume_if_token(self, token_type: TokenType) -> str or bool:
         """

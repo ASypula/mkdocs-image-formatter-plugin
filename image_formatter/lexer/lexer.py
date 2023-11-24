@@ -1,10 +1,11 @@
 from image_formatter.lexer.token import Token, TokenType, IntegerToken
 from image_formatter.lexer.position import Position
+from image_formatter.error_handler.errors import InvalidConfigCharacterError
 import io
 import sys
 from mkdocs.plugins import get_plugin_logger
 from copy import deepcopy
-from typing import Tuple
+from typing import Tuple, List
 
 log = get_plugin_logger(__name__)
 
@@ -22,10 +23,10 @@ class Lexer:
         fp: io.TextIOWrapper,
         *,
         max_int: int = sys.maxsize,
-        special_signs: Tuple[str, str] = ("-", "_"),
+        special_signs: Tuple[str] = ("-", "_"),
         tag: str = "@",
-        newline_characters: Tuple[str, str] = ("\n", "\r"),
-        additional_path_signs: Tuple[str, str] = ("/", "."),
+        newline_characters: Tuple[str] = ("\n", "\r"),
+        additional_path_signs: Tuple[str] = ("/", "."),
     ):
         """
         Args:
@@ -41,6 +42,7 @@ class Lexer:
         Attributes:
             running: defines if lexer should still go through the characters or EOF was encountered
         """
+        Lexer.verify_config(special_signs, tag, newline_characters, additional_path_signs)
         self.fp = fp
         self.running = True
         self.current_char = ""
@@ -51,9 +53,102 @@ class Lexer:
         self.newline_characters = newline_characters  # @TODO add hypothesis tests
         self.additional_path_signs = additional_path_signs
 
+    @classmethod
+    def name(cls) -> str:
+        return cls.__name__
+
+    @classmethod
+    def verify_config(
+        cls,
+        special_signs: Tuple[str],
+        tag: str,
+        newline_characters: Tuple[str],
+        additional_path_signs: Tuple[str],
+    ) -> bool:
+        """
+        Verifies if provided to Lexer configuration is valid. Upon failure on any of the verification steps, the function returns immediately with fail reason.
+
+        Returns:
+            True when configuration is valid
+        Raises:
+            InvalidConfigCharacterError: when invalid character is found
+            Exception: when there is different reason of validation fail
+        """
+        # configurations must be mutually exclusive
+        flat_list = [*set(special_signs), tag, *set(newline_characters), *set(additional_path_signs)]
+        if len(flat_list) != len(set(flat_list)):
+            raise Exception("Characters cannot repeat across configuration options")
+
+        Lexer.verify_special_signs(special_signs)
+        Lexer.verify_tag(tag)
+        Lexer.verify_newline_characters(newline_characters)
+        Lexer.verify_additional_path_signs(additional_path_signs)
+
     @staticmethod
-    def name() -> str:
-        return __class__.__name__
+    def find_invalid_char(valid_chars: List[str], check_chars: Tuple[str]) -> str:
+        invalid_char = next(filter(lambda x: x not in valid_chars, check_chars), None)
+        return invalid_char
+
+    @classmethod
+    def verify_special_signs(cls, signs: Tuple[str]) -> bool:
+        """
+        Verifies if all characters in the list are valid special signs characters
+
+        Returns:
+            True when configuration is valid
+        Raises:
+            InvalidConfigCharacterError: when invalid character is found
+        """
+        # todo - check (possibly everything might be valid)
+        return True
+
+    @classmethod
+    def verify_tag(cls, tag: str) -> bool:
+        """
+        Verifies if tag is valid
+
+        Returns:
+            True when tag is valid
+        Raises:
+            InvalidConfigCharacterError: when invalid character is found
+        """
+        valid_tags = "@#$%&~>?+=:"
+        invalid_char = Lexer.find_invalid_char(valid_tags, (tag))
+        if invalid_char:
+            raise InvalidConfigCharacterError(invalid_char, valid_tags)
+        return True
+
+    @classmethod
+    def verify_newline_characters(cls, chars: Tuple[str]) -> bool:
+        """
+        Verifies if all characters in the list are valid new line characters
+
+        Returns:
+            True when configuration is valid
+        Raises:
+            InvalidConfigCharacterError: when invalid character is found
+        """
+        valid_newline_chars = ["\n", "\r", "\r\n", "\x0b", "\v", "\f"]
+        invalid_char = Lexer.find_invalid_char(valid_newline_chars, chars)
+        if invalid_char:
+            raise InvalidConfigCharacterError(invalid_char, valid_newline_chars)
+        return True
+
+    @classmethod
+    def verify_additional_path_signs(cls, signs: Tuple[str]) -> bool:
+        """
+        Verifies if all characters in the list are valid additional path signs
+
+        Returns:
+            True when configuration is valid
+        Raises:
+            InvalidConfigCharacterError: when invalid character is found
+        """
+        valid_additional_path_signs = "-_.~:/?#[]@!$&'()*+,;=%"
+        invalid_char = Lexer.find_invalid_char(valid_additional_path_signs, signs)
+        if invalid_char:
+            raise InvalidConfigCharacterError(invalid_char, valid_additional_path_signs)
+        return True
 
     def is_character(self) -> bool:
         """
