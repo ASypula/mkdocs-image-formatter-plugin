@@ -99,7 +99,9 @@ class Lexer:
         Raises:
             InvalidConfigCharacterError: when invalid character is found
         """
-        # todo - check (possibly everything might be valid)
+        invalid_chars = [" ", "(", ")"]
+        if any([sign in invalid_chars for sign in signs]):
+            raise InvalidConfigCharacterError("<space>", [])
         return True
 
     @classmethod

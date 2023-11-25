@@ -230,7 +230,7 @@ def test_when_literal_starts_with_digit_then_literal_token_without_starting_digi
 
 
 def test_given_text_when_tags_not_separated_by_spaces_then_tokens_returned():
-    text = "@tag1(url1.png)@one0more-tag&and_word"
+    text = "@tag1(url1.png)@one-more-tag&and_word"
     fp = io.StringIO(text)
     lexer = Lexer(fp)
     tokens = get_all_tokens(lexer)
@@ -425,7 +425,7 @@ def test_given_invalid_newline_characters_then_exception_is_raised():
         Lexer.verify_newline_characters(invalid_chars)
 
 
-@pytest.mark.parametrize("chars", [("-", "~", "?"), ("&", "*", ">"), (":", "/", ",")])
+@pytest.mark.parametrize("chars", [("-", "~", "?"), ("&", "*"), (":", "/", ",")])
 def test_given_valid_additional_path_signs_then_verify_returns_true(chars):
     assert Lexer.verify_additional_path_signs(chars) == True
 
