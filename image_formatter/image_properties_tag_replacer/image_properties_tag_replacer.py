@@ -2,6 +2,7 @@ import copy
 
 from image_formatter.lexer.lexer import Lexer
 from image_formatter.lexer.token import TokenType, Token
+from image_formatter.lexer.token_sequence import TokenSequence
 from image_formatter.error_handler.error_handler import ErrorHandler
 from image_formatter.error_handler.errors import UnexpectedTagException
 from mkdocs.plugins import get_plugin_logger
@@ -9,7 +10,7 @@ from mkdocs.plugins import get_plugin_logger
 log = get_plugin_logger(__name__)
 
 
-class ImagePropertiesTagReplacer:
+class ImagePropertiesTagReplacer(TokenSequence):
     """
     Class ImagePropertiesTagReplacer responsible for replacing image size tags with properties after the image URL.
     Focuses only on the plugin's purpose - images with added size tags

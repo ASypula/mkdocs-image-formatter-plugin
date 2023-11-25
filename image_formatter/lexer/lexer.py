@@ -1,5 +1,6 @@
 from image_formatter.lexer.token import Token, TokenType, IntegerToken
 from image_formatter.lexer.position import Position
+from image_formatter.lexer.token_sequence import TokenSequence
 import io
 import sys
 from mkdocs.plugins import get_plugin_logger
@@ -8,7 +9,7 @@ from copy import deepcopy
 log = get_plugin_logger(__name__)
 
 
-class Lexer:
+class Lexer(TokenSequence):
     """
     Class representing Lexer.
     Responsible for going through the characters from source input one by one and
