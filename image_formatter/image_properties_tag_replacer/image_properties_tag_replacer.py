@@ -91,7 +91,7 @@ class ImagePropertiesTagReplacer:
         log.info(f"{ImagePropertiesTagReplacer.name()}: Failed to parse image link tag.")
         return False
 
-    def replace_image_properties_tags(self):
+    def get_token(self):
         """
         Replaces image size tags with properties after the url
         """

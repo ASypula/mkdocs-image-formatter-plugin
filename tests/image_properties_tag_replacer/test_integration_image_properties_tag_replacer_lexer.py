@@ -42,7 +42,7 @@ def test_given_no_image_links_then_nothing_is_replaced():
         Token(TokenType.T_IMAGE_URL, Position(3, 10), "(start-of/url.png)"),
     ]
 
-    for link in tags_replacer.replace_image_properties_tags():
+    for link in tags_replacer.get_token():
         result.append(link)
     assert result == expected_tokens
 
@@ -50,7 +50,7 @@ def test_given_no_image_links_then_nothing_is_replaced():
 def test_given_no_input_then_nothing_is_returned():
     tags_replacer = setup_tags_replacer("")
     result = []
-    for link in tags_replacer.replace_image_properties_tags():
+    for link in tags_replacer.get_token():
         result.append(link)
     assert result == []
 
@@ -88,7 +88,7 @@ def test_given_sequence_of_tokens_with_one_valid_image_tag_then_one_image_tag_is
     tags_replacer = setup_tags_replacer(text)
     result = []
 
-    for link in tags_replacer.replace_image_properties_tags():
+    for link in tags_replacer.get_token():
         result.append(link)
     assert result == expected_tokens
 
@@ -153,6 +153,6 @@ def test_given_image_links_when_links_mixed_with_other_tokens_then_image_links_r
     tags_replacer = setup_tags_replacer(text)
     result = []
 
-    for link in tags_replacer.replace_image_properties_tags():
+    for link in tags_replacer.get_token():
         result.append(link)
     assert result == expected_tokens

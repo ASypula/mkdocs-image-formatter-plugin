@@ -9,4 +9,4 @@ if __name__ == "__main__":
         lexer = Lexer(fp)
         lexer.next_char()
         parser = ImagePropertiesTagReplacer(lexer)
-        parser.replace_image_properties_tags()
+        parser.get_token()

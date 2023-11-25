@@ -67,7 +67,7 @@ def test_given_tag_and_url_separated_by_char_then_only_false_returned():
     tags_replacer = ImagePropertiesTagReplacer(mock_lexer, image_tags_properties)
     result = []
 
-    for link in tags_replacer.replace_image_properties_tags():
+    for link in tags_replacer.get_token():
         result.append(link)
     assert result == expected_tokens
 
@@ -88,7 +88,7 @@ def test_given_no_tags_or_urls_then_only_false_returned():
     tags_replacer = ImagePropertiesTagReplacer(mock_lexer, image_tags_properties)
     result = []
 
-    for link in tags_replacer.replace_image_properties_tags():
+    for link in tags_replacer.get_token():
         result.append(link)
     assert result == expected_tokens
 
