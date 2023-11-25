@@ -45,8 +45,7 @@ class ImagePropertiesTagReplacer:
             tag_token: already found tag
 
         Returns:
-            tuple(str, str): if successful, tag and url
-            False: if image link cannot be created
+            Token: of TokenType.T_IMAGE_URL_WITH_PROPERTIES if successful, otherwise of TokenType.T_IMAGE_SIZE_TAG
         """
         log.info(f"{ImagePropertiesTagReplacer.name()}: Trying to parse image link url.")
         if self.curr_token.type == TokenType.T_IMAGE_URL:
@@ -62,10 +61,13 @@ class ImagePropertiesTagReplacer:
 
     def add_tag_properties_to_url(self, tag_token: Token) -> str:
         """
-        Formats properties for given tag_token to string in a  CSS format.
+        Formats properties for given tag_token to string in a CSS format.
 
         Args:
             tag_token: token used to mark a url
+
+        Returns:
+            str: image tag properties formatted to CSS
         """
         properties = '{: style="'
         pairs = ";".join([f"{key}:{value}" for key, value in self.image_tags_properties[tag_token.string].items()])
@@ -79,7 +81,7 @@ class ImagePropertiesTagReplacer:
         image_link = image_size_tag, image_url
 
         Returns:
-            tuple(str, str): if successful from the parse_image_link_url
+            Token: of TokenType.T_IMAGE_URL_WITH_PROPERTIES if successful
             False: if image link tag cannot be created
         """
         log.info(f"{ImagePropertiesTagReplacer.name()}: Trying to parse image link tag.")
