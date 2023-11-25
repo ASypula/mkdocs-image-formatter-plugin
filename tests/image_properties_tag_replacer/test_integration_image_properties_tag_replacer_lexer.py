@@ -149,7 +149,7 @@ def test_given_sequence_of_tokens_with_one_valid_image_tag_then_one_image_tag_is
         ),
     ],
 )
-def test_given_image_links_mixed_with_other_tokens_then_image_links_returned(text, expected_tokens):
+def test_given_image_links_when_links_mixed_with_other_tokens_then_image_links_returned(text, expected_tokens):
     tags_replacer = setup_tags_replacer(text)
     result = []
 
