@@ -30,7 +30,7 @@ def test_file2_mix():
         TokenType.T_LITERAL,
         TokenType.T_WHITE_CHAR,
     ]
-    expected_strings = ["1", "hello1", " ", "small2", "\n", "some/url.com", "+", "word", "\n"]
+    expected_strings = ["1", "hello1", " ", "small2", "\n", "(some/url.com)", "+", "word", "\n"]
     expected_positions = [
         Position(1, 1),
         Position(1, 2),
@@ -59,7 +59,7 @@ def test_file3_classic_macos_newline():
         TokenType.T_IMAGE_URL,
         TokenType.T_WHITE_CHAR,
     ]
-    expected_strings = ["1", "hello1", "\r", "some/url.com", "\r"]
+    expected_strings = ["1", "hello1", "\r", "(some/url.com)", "\r"]
     expected_positions = [Position(1, 1), Position(1, 2), Position(1, 8), Position(2, 1), Position(2, 15)]
     with open(filename, newline="\r") as fp:
         lexer = Lexer(fp)  # noqa
@@ -78,7 +78,7 @@ def test_file4_unix_and_macos_newline():
         TokenType.T_IMAGE_URL,
         TokenType.T_WHITE_CHAR,
     ]
-    expected_strings = ["1", "hello1", "\n", "some/url.com", "\n"]
+    expected_strings = ["1", "hello1", "\n", "(some/url.com)", "\n"]
     expected_positions = [Position(1, 1), Position(1, 2), Position(1, 8), Position(2, 1), Position(2, 15)]
     with open(filename) as fp:
         lexer = Lexer(fp)  # noqa

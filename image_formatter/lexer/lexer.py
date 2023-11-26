@@ -227,8 +227,8 @@ class Lexer:
             log.info(f"{Lexer.name()}: Failed to build a url. Missing '('.)")
             return None
         position = deepcopy(self.current_position)
+        string = self.current_char
         self.next_char()
-        string = ""
         while self.is_character() or self.current_char == "/":
             string += self.current_char
             self.next_char()
@@ -238,6 +238,7 @@ class Lexer:
         if not self.current_char == ")":
             log.info(f"{Lexer.name()}: Failed to build a url. Missing ')'.)")
             return None
+        string += self.current_char
         self.next_char()
         log.info(f"{Lexer.name()}: Image url built successfully. Returning 'T_IMAGE_URL' token.")
         return Token(TokenType.T_IMAGE_URL, position, string)

@@ -10,4 +10,4 @@ nav:
   - Home: index.md
   - Plugin: plugin.md
   - Lexer: lexer.md
-  - Parser: parser.md
+  - ImagePropertiesTagReplacer: image_properties_tag_replacer.md
