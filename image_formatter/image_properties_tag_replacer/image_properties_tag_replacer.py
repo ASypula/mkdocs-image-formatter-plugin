@@ -27,9 +27,9 @@ class ImagePropertiesTagReplacer:
         self.image_tags_properties = image_tags_properties
         self.error_handler = error_handler
 
-    @staticmethod
-    def name() -> str:
-        return __class__.__name__
+    @classmethod
+    def name(cls) -> str:
+        return cls.__name__
 
     def next_token(self):
         self.curr_token = self.lexer.get_token()
