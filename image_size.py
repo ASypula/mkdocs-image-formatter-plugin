@@ -39,5 +39,5 @@ class ImageSizePlugin(mkdocs.plugins.BasePlugin[ImageSizeConfig]):
         return config
 
     def on_page_read_source() -> str or None:
-        # todo: using lexer, parser and interpreter read user's docs and apply sizes specified in tags
+        # todo: using lexer, image_properties_tag_replacer and interpreter read user's docs and apply sizes specified in tags
         pass

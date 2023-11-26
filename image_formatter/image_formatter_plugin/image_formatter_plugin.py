@@ -56,6 +56,6 @@ class ImageFormatterPlugin(mkdocs.plugins.BasePlugin[ImageFormatterConfig]):
         return config
 
     def on_page_read_source(self, page: Page, config: MkDocsConfig) -> str or None:
-        # todo: using lexer, parser and interpreter read user's docs and apply sizes specified in tags
+        # todo: using lexer, image_properties_tag_replacer and interpreter read user's docs and apply sizes specified in tags
 
         pass

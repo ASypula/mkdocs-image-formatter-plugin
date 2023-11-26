@@ -1,0 +1,3 @@
+# ImagePropertiesTagReplacer
+
+::: image_formatter.image_properties_tag_replacer.image_properties_tag_replacer

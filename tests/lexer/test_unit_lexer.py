@@ -187,7 +187,7 @@ def test_given_complex_text_with_special_chars_then_sequence_of_tokens_is_return
         "\n",
         " ",
         "tag2",
-        "start-of/url.png",
+        "(start-of/url.png)",
     ]
     expected_positions = [
         Position(1, 1),
@@ -243,7 +243,7 @@ def test_given_text_when_tags_not_separated_by_spaces_then_tokens_returned():
     ]
     assert [token.string for token in tokens] == [
         "tag1",
-        "url1.png",
+        "(url1.png)",
         "one-more-tag",
         "&",
         "and_word",
