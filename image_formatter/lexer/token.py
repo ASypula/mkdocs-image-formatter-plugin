@@ -55,3 +55,20 @@ class IntegerToken(Token):
         """
         super(IntegerToken, self).__init__(type, position, str(integer))
         self.integer = integer
+
+
+class TagToken(Token):
+    """
+    Class representing token of type tag.
+    """
+
+    def __init__(self, type: TokenType, position: Position, string: str = "", tag_character: str = ""):
+        """
+        Args:
+            type: type of the token
+            position: position of the first character of the token
+            string: final version of token's text
+            tag_character: characteristic character for the tag
+        """
+        super(TagToken, self).__init__(type, position, string)
+        self.tag_character = tag_character
