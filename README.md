@@ -19,13 +19,15 @@ The plugin allows you to define image size categories and use them as tags in yo
 To configuration file add:
 
 ```
-- image_sizes:
-    - <tag_name>:
-        width: <size>
-        height: <size>
-    - <tag_name>:
-        width: <size>
-        height: <size>
+plugins:
+    - image_formatter:
+        image_size:
+            <tag_name>:
+                width: <size>
+                height: <size>
+            <tag_name>:
+                width: <size>
+                height: <size>
 ```
 
 where different `tag_names` are the names of image size categories. Remember about measurement units (`px, %, etc.`) when specifying width and height.
@@ -33,13 +35,16 @@ where different `tag_names` are the names of image size categories. Remember abo
 Example of correct configuration:
 
 ```
-- image_sizes:
-    - large:
-        width: 100px
-        height: 50px
-    - small:
-        width: 80px
-        height: 40px
+plugins:
+  - <your other plugins>
+  - image-formatter:
+      image_size:
+        small:
+          height: 100px
+          width: 100px
+        big:
+          height: 200px
+          width: 200px
 ```
 
 #### Step 2:

@@ -37,13 +37,15 @@ Plug-in do MkDocs ułatwiający ustawianie rozmiarów obrazów w dokumentacji.
 - możliwość konfiguracji wymiarów obrazów:
   ```
   # Dodanie odpowiednich wpisów konfiguracyjnych:
-  image_sizes:
-    large:
-      - width: 100px
-        height: 50px
-    small:
-      - width: 80px
-        height: 40px
+  plugins:
+    - image_formatter:
+        image_size:
+            <tag_name>:
+                width: <size>
+                height: <size>
+            <tag_name>:
+                width: <size>
+                height: <size>
   ```
 - automatyczne ustawianie wymiarów obrazów poprzez zdefiniowane tagi
   ```
