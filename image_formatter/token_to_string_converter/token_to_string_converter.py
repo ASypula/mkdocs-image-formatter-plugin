@@ -1,5 +1,5 @@
 from image_formatter.lexer.token_sequence import TokenSequence
-from image_formatter.lexer.token import TokenType
+from image_formatter.lexer.token import TagToken
 
 
 class TokenToStringConverter:
@@ -9,11 +9,9 @@ class TokenToStringConverter:
     def to_text(self) -> str:
         text = ""
         for token in self.get_all_tokens():
-            if token.type == TokenType.T_IMAGE_SIZE_TAG:
-                # @TODO Refactor this
-                text += f"@{token.string}"
-            else:
-                text += token.string
+            if type(token) == TagToken:
+                text += f"{token.tag_character}"
+            text += token.string
         return text
 
     def get_all_tokens(self) -> list:
