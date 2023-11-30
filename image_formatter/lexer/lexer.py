@@ -1,6 +1,6 @@
 from image_formatter.lexer.token import Token, TokenType, IntegerToken, TagToken
 from image_formatter.lexer.position import Position
-from image_formatter.lexer.token_sequence import TokenSequence
+from image_formatter.lexer.token_stream_processor import TokenStreamProcessor
 from image_formatter.error_handler.errors import InvalidConfigCharacterError
 import io
 import sys
@@ -11,7 +11,7 @@ from typing import Tuple, List
 log = get_plugin_logger(__name__)
 
 
-class Lexer(TokenSequence):
+class Lexer(TokenStreamProcessor):
     """
     Class representing Lexer.
     Responsible for going through the characters from source input one by one and

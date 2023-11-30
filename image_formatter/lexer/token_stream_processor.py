@@ -1,7 +1,7 @@
 from image_formatter.lexer.token import Token
 
 
-class TokenSequence:
+class TokenStreamProcessor:
     """
     Base class for tokens stream processing.
     """
