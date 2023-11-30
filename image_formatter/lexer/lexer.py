@@ -1,4 +1,4 @@
-from image_formatter.lexer.token import Token, TokenType, IntegerToken
+from image_formatter.lexer.token import Token, TokenType, IntegerToken, TagToken
 from image_formatter.lexer.position import Position
 from image_formatter.lexer.token_sequence import TokenSequence
 import io
@@ -165,11 +165,12 @@ class Lexer(TokenSequence):
     def _is_number_in_range(self, number):
         return number * 10 + int(self.current_char) <= self.max_int
 
-    def build_tag(self) -> Token or None:
+    def build_tag(self) -> TagToken or None:
         """
         Tries to build an image tag token according to:
         ```
-        image_size_tag = '@', literal
+        image_size_tag = tag_character, literal
+        tag_character by default is '@'
         ```
 
         Returns:
@@ -187,7 +188,7 @@ class Lexer(TokenSequence):
             log.info(f"{Lexer.name()}: Failed to build a tag. Missing token 'T_LITERAL'.")
             return None
         log.info(f"{Lexer.name()}: Tag built successfully. Returning 'T_IMAGE_SIZE_TAG' token.")
-        return Token(TokenType.T_IMAGE_SIZE_TAG, position, token.string)
+        return TagToken(TokenType.T_IMAGE_SIZE_TAG, position, token.string, self.tag)
 
     def get_url_ending(self, string: str) -> str or None:
         """
