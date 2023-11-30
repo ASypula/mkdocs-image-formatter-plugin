@@ -15,11 +15,15 @@ venv/bin/activate: requirements.txt
 	. ./venv/bin/activate
 	$(PIP) install -r requirements.txt
 
-setup: venv/bin/activate
+setup_venv: venv/bin/activate
+
+setup:
+	$(PIP) install -r requirements.txt
 
 clean:
 	rm -rf __pycache__
 	rm -rf venv
 	rm -rf .tox
+	rm -rf .hypothesis
 
 .PHONY: tests clean pre_commit
