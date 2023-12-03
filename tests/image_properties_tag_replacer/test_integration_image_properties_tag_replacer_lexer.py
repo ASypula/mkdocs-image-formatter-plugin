@@ -1,5 +1,5 @@
 from image_formatter.lexer.lexer import Lexer
-from image_formatter.lexer.token import Token, TokenType
+from image_formatter.lexer.token import Token, TokenType, TagToken
 from image_formatter.lexer.position import Position
 from image_formatter.image_properties_tag_replacer.image_properties_tag_replacer import ImagePropertiesTagReplacer
 import io
@@ -30,12 +30,12 @@ def test_given_no_image_links_then_nothing_is_replaced():
         Token(TokenType.T_CHAR, Position(1, 14), "$"),
         Token(TokenType.T_CHAR, Position(1, 15), "$"),
         Token(TokenType.T_WHITE_CHAR, Position(1, 16), " "),
-        Token(TokenType.T_WHITE_CHAR, Position(1, 17), "tag1-tag"),
+        TagToken(TokenType.T_IMAGE_SIZE_TAG, Position(1, 17), "tag1-tag"),
         Token(TokenType.T_WHITE_CHAR, Position(1, 26), " "),
         Token(TokenType.T_WHITE_CHAR, Position(1, 27), "\n"),
         Token(TokenType.T_WHITE_CHAR, Position(2, 1), "\n"),
         Token(TokenType.T_WHITE_CHAR, Position(3, 1), " "),
-        Token(TokenType.T_WHITE_CHAR, Position(3, 2), "tag2"),
+        TagToken(TokenType.T_IMAGE_SIZE_TAG, Position(3, 2), "tag2"),
         Token(TokenType.T_WHITE_CHAR, Position(3, 7), " "),
         Token(TokenType.T_CHAR, Position(3, 8), "x"),
         Token(TokenType.T_WHITE_CHAR, Position(3, 9), " "),
@@ -138,7 +138,7 @@ def test_given_sequence_of_tokens_with_one_valid_image_tag_then_one_image_tag_is
                 Token(TokenType.T_WHITE_CHAR, Position(1, 26), " "),
                 Token(TokenType.T_LITERAL, Position(1, 27), "word"),
                 Token(TokenType.T_WHITE_CHAR, Position(1, 31), " "),
-                Token(TokenType.T_IMAGE_SIZE_TAG, Position(1, 32), "big"),
+                TagToken(TokenType.T_IMAGE_SIZE_TAG, Position(1, 32), "big"),
                 Token(TokenType.T_WHITE_CHAR, Position(1, 36), " "),
                 Token(TokenType.T_CHAR, Position(1, 37), "*"),
                 Token(TokenType.T_IMAGE_URL, Position(1, 38), "(next/longer.url.jpg)"),
