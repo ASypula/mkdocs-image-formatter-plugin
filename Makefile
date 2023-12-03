@@ -26,8 +26,12 @@ clean:
 	rm -rf .tox
 	rm -rf .hypothesis
 
-plugin_demo:
-	cd demo
+demo_cats:
+	cd demo/demo_cats
+	mkdocs serve
+
+demo_dogs:
+	cd demo/demo_dogs
 	mkdocs serve
 
 .PHONY: tests clean pre_commit
