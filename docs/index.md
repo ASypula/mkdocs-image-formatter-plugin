@@ -68,6 +68,5 @@ Example:
 ![MyImage]@small(../images/b.png)
 ```
 
-#### Info:
-If you accidentally use a tag that is not specified in the documentation, the tag will be removed and the image will be displayed with no additional formatting.
-
+### Demo:
+You can see the plugin in action after you clone this project to your local repository. Depending on whether you're a dog or a cat person, execute `make demo_dogs` or `make demo_cats`.

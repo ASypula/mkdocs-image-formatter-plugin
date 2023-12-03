@@ -1,0 +1,23 @@
+site_name: Test with cats
+
+dev_addr: 127.0.0.1:8002
+
+theme:
+  name: "material"
+
+markdown_extensions:
+  - attr_list
+
+plugins:
+  - mkdocstrings
+  - image-formatter:
+      image_size:
+        small:
+          height: 50%
+          width: 50%
+        big:
+          height: 80%
+          width: 80%
+
+nav:
+  - Home: index.md

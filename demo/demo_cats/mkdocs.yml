@@ -13,11 +13,11 @@ plugins:
   - image-formatter:
       image_size:
         small:
-          height: 100px
-          width: 100px
+          height: 250px
+          width: 250px
         big:
-          height: 200px
-          width: 200px
+          height: 500px
+          width: 500px
 
 nav:
   - Home: index.md
