@@ -27,7 +27,16 @@ import os
 import shutil
 import logging
 from click.testing import CliRunner
+from pathlib import Path
 from mkdocs.__main__ import build_command
+
+
+@pytest.fixture
+def set_up_folder(request):
+    temp_dir = "./tests/tmp"
+    os.mkdir(temp_dir)
+    yield Path(temp_dir)
+    shutil.rmtree(temp_dir)
 
 
 # Adapted from https://github.com/timvink/mkdocs-table-reader-plugin/blame/master/tests/test_build.py
@@ -99,8 +108,8 @@ def build_docs_setup(testproject_path):
         raise
 
 
-def test_given_tags_in_config_then_changes_image_styling(tmp_path):
-    tmp_proj = setup_clean_mkdocs_folder("./resources/e2e_test_files/test_project/mkdocs.yml", tmp_path)
+def test_given_tags_in_config_then_changes_image_styling(set_up_folder):
+    tmp_proj = setup_clean_mkdocs_folder("./resources/e2e_test_files/test_project/mkdocs.yml", set_up_folder)
 
     build_docs_setup(tmp_proj)
 
@@ -113,8 +122,10 @@ def test_given_tags_in_config_then_changes_image_styling(tmp_path):
     assert re.search(r'<img alt="Maine Coon" src="img/Maine_coon.jpg" style="height:100px;width:100px" />', contents)
 
 
-def test_given_unknown_tags_in_config_then_no_styling_applied(tmp_path):
-    tmp_proj = setup_clean_mkdocs_folder("./resources/e2e_test_files/test_project_unknown_tags/mkdocs.yml", tmp_path)
+def test_given_unknown_tags_in_config_then_no_styling_applied(set_up_folder):
+    tmp_proj = setup_clean_mkdocs_folder(
+        "./resources/e2e_test_files/test_project_unknown_tags/mkdocs.yml", set_up_folder
+    )
 
     build_docs_setup(tmp_proj)
 
