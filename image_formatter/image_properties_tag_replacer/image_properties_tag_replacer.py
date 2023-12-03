@@ -70,7 +70,7 @@ class ImagePropertiesTagReplacer(TokenStreamProcessor):
         Returns:
             str: image tag properties formatted to CSS
         """
-        if (tag_token.string not in self.image_tags_properties):
+        if tag_token.string not in self.image_tags_properties:
             log.info(f"{ImagePropertiesTagReplacer.name()}: {tag_token.string} is an unknown tag, removing formatting")
             return self.curr_token.string
         properties = '{: style="'

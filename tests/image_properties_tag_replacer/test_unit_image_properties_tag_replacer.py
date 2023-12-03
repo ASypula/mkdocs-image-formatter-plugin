@@ -4,7 +4,6 @@ from image_formatter.lexer.token import TokenType, Token
 from image_formatter.lexer.position import Position
 from tests.test_helpers import get_all_tags_replacer_results
 
-# @ TODO inline global var
 image_tags_properties = {
     "small": {"height": "100px", "width": "100px"},
     "medium": {"height": "150px", "width": "150px"},
@@ -51,7 +50,7 @@ def test_given_only_image_links_then_only_image_links_returned():
     assert result == expected_tokens
 
 
-def test_given_tag_and_url_separated_by_char_then_only_false_returned():
+def test_given_tag_and_url_separated_by_char_then_tags_are_unchanged():
     mock_lexer = Mock()
     mock_lexer.get_token.side_effect = [
         Token(TokenType.T_IMAGE_SIZE_TAG, Position(1, 1), "small"),
@@ -72,7 +71,7 @@ def test_given_tag_and_url_separated_by_char_then_only_false_returned():
     assert result == expected_tokens
 
 
-def test_given_no_tags_or_urls_then_only_false_returned():
+def test_given_no_tags_or_urls_then_tags_are_unchanged():
     mock_lexer = Mock()
     mock_lexer.get_token.side_effect = [
         Token(TokenType.T_CHAR, Position(1, 1), "*"),
@@ -93,7 +92,7 @@ def test_given_no_tags_or_urls_then_only_false_returned():
     assert result == expected_tokens
 
 
-def test_given_url_and_tag_token_in_reverted_order_then_only_false_returned():
+def test_given_url_and_tag_token_in_reverted_order_then_tags_are_unchanged():
     mock_lexer = Mock()
     mock_lexer.get_token.side_effect = [
         Token(TokenType.T_IMAGE_URL, Position(1, 1), "(some/url.png)"),

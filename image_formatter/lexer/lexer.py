@@ -51,7 +51,7 @@ class Lexer(TokenStreamProcessor):
         self.max_int = max_int
         self.tag = tag
         self.special_signs = special_signs
-        self.newline_characters = newline_characters  # @TODO add hypothesis tests
+        self.newline_characters = newline_characters
         self.additional_path_signs = additional_path_signs
 
     @classmethod
@@ -305,7 +305,7 @@ class Lexer(TokenStreamProcessor):
             return None
         string += self.current_char
         self.next_char()
-        while self.is_character() or self.current_char in self.additional_path_signs:  # @TODO add hypothesis tests
+        while self.is_character() or self.current_char in self.additional_path_signs:
             string += self.current_char
             self.next_char()
         log.info(f"{Lexer.name()}: Url ending built successfully.")

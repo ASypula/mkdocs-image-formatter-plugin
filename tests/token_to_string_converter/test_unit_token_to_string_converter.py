@@ -4,7 +4,6 @@ from image_formatter.lexer.lexer import Lexer
 from image_formatter.image_properties_tag_replacer.image_properties_tag_replacer import ImagePropertiesTagReplacer
 from image_formatter.token_to_string_converter.token_to_string_converter import TokenToStringConverter
 
-# @ TODO inline global var
 image_tags_properties = {
     "small": {"height": "100px", "width": "100px"},
     "small2": {"height": "110px", "width": "110px"},

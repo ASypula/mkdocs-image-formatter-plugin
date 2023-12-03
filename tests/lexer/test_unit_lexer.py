@@ -141,7 +141,6 @@ def test_given_only_tags_and_white_chars_then_only_tag_and_white_char_tokens_are
             [Position(1, 1), Position(2, 1), Position(2, 2)],
             [TokenType.T_WHITE_CHAR, TokenType.T_WHITE_CHAR, TokenType.T_IMAGE_URL],
         ),
-        # ("  \t(url1.png.url2/url3.jpg)", [Position(1, 4)]), @TODO
     ],
 )
 def test_given_only_urls_and_white_chars_then_only_url_and_white_char_tokens_are_returned(text, positions, types):
