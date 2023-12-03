@@ -56,7 +56,7 @@ class ImagePropertiesTagReplacer(TokenStreamProcessor):
             self.next_token()
             return Token(TokenType.T_IMAGE_URL_WITH_PROPERTIES, url_token.position, formatted_url)
         else:
-            log.error(f"{ImagePropertiesTagReplacer.name()}: Failed to parse image link url.")
+            log.info(f"{ImagePropertiesTagReplacer.name()}: Failed to parse image link url.")
             self.error_handler.handle(UnexpectedTagException(TokenType.T_IMAGE_URL, self.curr_token.type))
             return tag_token
 
