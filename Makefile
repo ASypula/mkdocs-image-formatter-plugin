@@ -7,6 +7,7 @@ tests:
 	pytest
 
 pre_commit:
+	black -l 120 .
 	tox
 
 venv/bin/activate: requirements.txt
