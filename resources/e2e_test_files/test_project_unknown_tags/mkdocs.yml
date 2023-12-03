@@ -1,4 +1,4 @@
-site_name: Image formatter plugin for MkDocs
+site_name: Test with cats
 
 dev_addr: 127.0.0.1:8002
 
@@ -21,6 +21,3 @@ plugins:
 
 nav:
   - Home: index.md
-  - Plugin: plugin.md
-  - Lexer: lexer.md
-  - ImagePropertiesTagReplacer: image_properties_tag_replacer.md

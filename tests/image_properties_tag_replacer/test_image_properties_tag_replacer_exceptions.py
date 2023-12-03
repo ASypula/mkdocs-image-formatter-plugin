@@ -6,7 +6,6 @@ from image_formatter.error_handler.errors import UnexpectedTagException
 from image_formatter.lexer.position import Position
 from tests.test_helpers import get_all_tags_replacer_results
 
-# @ TODO inline global var
 image_tags_properties = {
     "small": {"height": "100px", "width": "100px"},
     "small-2": {"height": "110px", "width": "110px"},

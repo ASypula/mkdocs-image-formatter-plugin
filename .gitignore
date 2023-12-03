@@ -1,7 +1,9 @@
 venv/
 .venv/
 __pycache__/
-.vscode/*
+.vscode
 .pytest_cache/
 .tox/
 .hypothesis/
+site
+demo/site

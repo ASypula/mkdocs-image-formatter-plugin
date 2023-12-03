@@ -56,7 +56,7 @@ class ImagePropertiesTagReplacer(TokenStreamProcessor):
             self.next_token()
             return Token(TokenType.T_IMAGE_URL_WITH_PROPERTIES, url_token.position, formatted_url)
         else:
-            log.error(f"{ImagePropertiesTagReplacer.name()}: Failed to parse image link url.")
+            log.info(f"{ImagePropertiesTagReplacer.name()}: Failed to parse image link url.")
             self.error_handler.handle(UnexpectedTagException(TokenType.T_IMAGE_URL, self.curr_token.type))
             return tag_token
 
@@ -70,6 +70,9 @@ class ImagePropertiesTagReplacer(TokenStreamProcessor):
         Returns:
             str: image tag properties formatted to CSS
         """
+        if tag_token.string not in self.image_tags_properties:
+            log.info(f"{ImagePropertiesTagReplacer.name()}: {tag_token.string} is an unknown tag, removing formatting")
+            return self.curr_token.string
         properties = '{: style="'
         pairs = ";".join([f"{key}:{value}" for key, value in self.image_tags_properties[tag_token.string].items()])
         properties = properties + pairs + '"}'
