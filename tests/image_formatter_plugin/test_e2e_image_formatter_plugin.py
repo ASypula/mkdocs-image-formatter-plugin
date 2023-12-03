@@ -29,7 +29,7 @@ import logging
 from click.testing import CliRunner
 from mkdocs.__main__ import build_command
 
-
+# Adapted from https://github.com/timvink/mkdocs-table-reader-plugin/blame/master/tests/test_build.py
 def setup_clean_mkdocs_folder(mkdocs_yml_path, output_path):
     """
     Sets up a clean mkdocs directory
@@ -44,6 +44,8 @@ def setup_clean_mkdocs_folder(mkdocs_yml_path, output_path):
 
     Returns:
         testproject_path (Path): Path to test project
+
+    Original code by timvink
     """
 
     testproject_path = output_path / "testproject"
@@ -79,6 +81,8 @@ def build_docs_setup(testproject_path):
 
     Returns:
         command: Object with results of command
+
+    Original code by timvink
     """
 
     cwd = os.getcwd()
@@ -100,7 +104,6 @@ def test_given_tags_in_config_then_changes_image_styling(tmp_path):
 
     build_docs_setup(tmp_proj)
 
-    # Specify the path to the built Markdown document modified by your plugin
     page_path = tmp_proj / 'site/index.html'
     contents = page_path.read_text()
     assert re.search(r'<img alt="Persian Cat" src="img/Persialainen.jpg" style="height:100px;width:100px" />', contents)
@@ -112,7 +115,6 @@ def test_given_unknown_tags_in_config_then_no_styling_applied(tmp_path):
 
     build_docs_setup(tmp_proj)
 
-    # Specify the path to the built Markdown document modified by your plugin
     page_path = tmp_proj / 'site/index.html'
     contents = page_path.read_text()
     assert re.search(r'<img alt="Persian Cat" src="img/Persialainen.jpg" />', contents)

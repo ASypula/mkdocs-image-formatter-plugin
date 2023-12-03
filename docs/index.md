@@ -12,6 +12,9 @@
 
 The plugin allows you to define image size categories and use them as tags in your documentation. The images annotated with tags will be resized to the size specified in the configuration file.
 
+### Installation:
+You can install the plugin using pip: `pip install mkdocs-image-formatter-plugin`
+
 ### Usage:
 
 #### Prerequisites
