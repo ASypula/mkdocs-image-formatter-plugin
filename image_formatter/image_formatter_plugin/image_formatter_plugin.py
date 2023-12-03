@@ -13,6 +13,7 @@ import logging
 from typing import Tuple
 from image_formatter.lexer.lexer import Lexer
 from image_formatter.image_properties_tag_replacer.image_properties_tag_replacer import ImagePropertiesTagReplacer
+from image_formatter.token_to_string_converter.token_to_string_converter import TokenToStringConverter
 
 WIDTH = "width"
 HEIGHT = "height"
@@ -58,12 +59,10 @@ class ImageFormatterPlugin(mkdocs.plugins.BasePlugin[ImageFormatterConfig]):
         return config
 
     def on_page_read_source(self, page: Page, config: MkDocsConfig) -> str or None:
-        # todo: using lexer, image_properties_tag_replacer and interpreter read user's docs and apply sizes specified in tags
         src_path = page.file.abs_src_path
-        # with open(src_path) as fp:
-        #     with open("test.txt", "w+") as t:
-        #         lexer = Lexer(fp)
-        #         lexer.next_char()
-        #         tags_replacer = ImagePropertiesTagReplacer(lexer, self.config["image_size"])
-        #         for link in tags_replacer.get_token():
-        #             t.write(link.string)
+        with open(src_path, "r") as fp:
+            lexer = Lexer(fp)  # noqa
+            image_tag_replacer = ImagePropertiesTagReplacer(lexer, self.config["image_size"])
+            converter = TokenToStringConverter(image_tag_replacer)
+            result = converter.to_text()
+        return result
