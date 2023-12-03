@@ -26,4 +26,8 @@ clean:
 	rm -rf .tox
 	rm -rf .hypothesis
 
+plugin_demo:
+	cd demo
+	mkdocs serve
+
 .PHONY: tests clean pre_commit

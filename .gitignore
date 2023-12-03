@@ -5,3 +5,5 @@ __pycache__/
 .pytest_cache/
 .tox/
 .hypothesis/
+site
+demo/site
