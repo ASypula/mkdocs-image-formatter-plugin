@@ -8,7 +8,7 @@ setup(
     version="1.0.0",
     entry_points={
         "mkdocs.plugins": [
-            "image-formatter = image_formatter.image_formatter_plugin.image_formatter_plugin:ImageFormatterPlugin",
+            "image-formatter-plugin = image_formatter.image_formatter_plugin.image_formatter_plugin:ImageFormatterPlugin",
         ]
     },
 )
